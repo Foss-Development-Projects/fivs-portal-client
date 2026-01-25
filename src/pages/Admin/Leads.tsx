@@ -355,6 +355,8 @@ const AdminLeads: React.FC = () => {
                       <div className="p-4 bg-white dark:bg-gray-900 border-t dark:border-gray-800 flex items-center gap-2">
                         <input
                           type="file"
+                          id="admin-chat-file"
+                          name="chatFile"
                           ref={fileInputRef}
                           className="hidden"
                           onChange={handleFileUpload}
@@ -368,6 +370,8 @@ const AdminLeads: React.FC = () => {
                         </button>
                         <input
                           type="text"
+                          id="admin-chat-input"
+                          name="chatMessage"
                           placeholder="Ask partner for details..."
                           className="flex-1 px-4 py-2 text-sm border dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-[#2E7D32]"
                           value={chatMessage}
@@ -407,21 +411,21 @@ const AdminLeads: React.FC = () => {
                       <div className="space-y-4">
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Aggregator</label>
-                          <select className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.aggregator} onChange={e => setIssueData({ ...issueData, aggregator: e.target.value })}>
+                          <select id="issue-aggregator" name="aggregator" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.aggregator} onChange={e => setIssueData({ ...issueData, aggregator: e.target.value })}>
                             <option value="">-- Select Aggregator --</option>
                             {WEB_AGGREGATORS.map(a => <option key={a} value={a}>{a}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Insurance Company</label>
-                          <select className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.insuranceCompany} onChange={e => setIssueData({ ...issueData, insuranceCompany: e.target.value })}>
+                          <select id="issue-insurance-company" name="insuranceCompany" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.insuranceCompany} onChange={e => setIssueData({ ...issueData, insuranceCompany: e.target.value })}>
                             <option value="">-- Select Company --</option>
                             {INSURANCE_COMPANIES.map(c => <option key={c} value={c}>{c}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Policy Type</label>
-                          <select className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.policyType} onChange={e => setIssueData({ ...issueData, policyType: e.target.value })}>
+                          <select id="issue-policy-type" name="policyType" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.policyType} onChange={e => setIssueData({ ...issueData, policyType: e.target.value })}>
                             <option value="TP">TP</option>
                             <option value="OD">OD</option>
                             <option value="Comprehensive">Comprehensive</option>
@@ -431,13 +435,15 @@ const AdminLeads: React.FC = () => {
 
                       <div className="border-t dark:border-gray-700 pt-6">
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Policy Copy URL</label>
-                        <input type="url" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none" placeholder="https://..." value={issueData.policyUrl} onChange={e => setIssueData({ ...issueData, policyUrl: e.target.value })} />
+                        <input type="url" id="issue-policy-url" name="policyUrl" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none" placeholder="https://..." value={issueData.policyUrl} onChange={e => setIssueData({ ...issueData, policyUrl: e.target.value })} />
                       </div>
 
                       <div>
                         <label className="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-2 ml-1">Next Renewal Date (Mandatory)</label>
                         <input
                           type="date"
+                          id="issue-renewal-date"
+                          name="renewalDate"
                           required
                           className="w-full px-5 py-3 rounded-2xl border-2 border-red-100 dark:bg-gray-800 dark:border-red-900/50 dark:text-white focus:border-red-500 outline-none"
                           value={issueData.renewalDate}
@@ -448,24 +454,24 @@ const AdminLeads: React.FC = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Admin Comm.</label>
-                          <input type="number" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none font-black text-xl appearance-none" placeholder="0.00" value={issueData.adminCommission} onChange={e => setIssueData({ ...issueData, adminCommission: e.target.value })} />
+                          <input type="number" id="issue-admin-comm" name="adminCommission" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none font-black text-xl appearance-none" placeholder="0.00" value={issueData.adminCommission} onChange={e => setIssueData({ ...issueData, adminCommission: e.target.value })} />
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Partner Comm.</label>
-                          <input type="number" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-orange-500 outline-none font-black text-xl appearance-none" placeholder="0.00" value={issueData.partnerCommission} onChange={e => setIssueData({ ...issueData, partnerCommission: e.target.value })} />
+                          <input type="number" id="issue-partner-comm" name="partnerCommission" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-orange-500 outline-none font-black text-xl appearance-none" placeholder="0.00" value={issueData.partnerCommission} onChange={e => setIssueData({ ...issueData, partnerCommission: e.target.value })} />
                         </div>
                       </div>
 
                       <div>
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Payout Disposition</label>
                         <div className="flex flex-col gap-2">
-                          <select className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm bg-white dark:bg-gray-900" value={issueData.payoutStatus} onChange={e => setIssueData({ ...issueData, payoutStatus: e.target.value as any })}>
+                          <select id="issue-payout-status" name="payoutStatus" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm bg-white dark:bg-gray-900" value={issueData.payoutStatus} onChange={e => setIssueData({ ...issueData, payoutStatus: e.target.value as any })}>
                             <option value="credited">Credited</option>
                             <option value="pending">Pending</option>
                             <option value="pre-payout">Pre-Payout</option>
                           </select>
                           {(issueData.payoutStatus === 'credited' || issueData.payoutStatus === 'pending') && (
-                            <input type="text" placeholder="Bank Transaction ID / UTR" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 outline-none font-bold text-sm" value={issueData.payoutTransactionId} onChange={e => setIssueData({ ...issueData, payoutTransactionId: e.target.value })} />
+                            <input type="text" id="issue-tx-id" name="payoutTransactionId" placeholder="Bank Transaction ID / UTR" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 outline-none font-bold text-sm" value={issueData.payoutTransactionId} onChange={e => setIssueData({ ...issueData, payoutTransactionId: e.target.value })} />
                           )}
                         </div>
                       </div>

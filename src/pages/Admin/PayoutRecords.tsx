@@ -253,11 +253,11 @@ const AdminPayoutRecords: React.FC = () => {
             <div className="space-y-4 mb-8">
               <div>
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-2 ml-1">Start Date</label>
-                <input type="date" className="w-full px-4 py-3 border-2 border-gray-50 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                <input type="date" id="export-start-date" name="startDate" className="w-full px-4 py-3 border-2 border-gray-50 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={startDate} onChange={e => setStartDate(e.target.value)} />
               </div>
               <div>
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-2 ml-1">End Date</label>
-                <input type="date" className="w-full px-4 py-3 border-2 border-gray-50 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                <input type="date" id="export-end-date" name="endDate" className="w-full px-4 py-3 border-2 border-gray-50 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={endDate} onChange={e => setEndDate(e.target.value)} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -287,6 +287,8 @@ const AdminPayoutRecords: React.FC = () => {
               {/* 1. Total Premium */}
               <SmartEditInput
                 label="1. Total Premium (Adjusted)"
+                id="edit-payout-premium"
+                name="premiumAmount"
                 value={editingRecord.premiumAmount}
                 onChange={v => setEditingRecord({ ...editingRecord, premiumAmount: Number(v) })}
                 type="number"
@@ -296,7 +298,7 @@ const AdminPayoutRecords: React.FC = () => {
               {/* 2. Commission Type */}
               <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border-2 border-gray-50 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">2. Commission Type</label>
-                <select className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.commissionOn} onChange={e => setEditingRecord({ ...editingRecord, commissionOn: e.target.value as any })}>
+                <select id="payout-comm-type" name="commissionOn" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.commissionOn} onChange={e => setEditingRecord({ ...editingRecord, commissionOn: e.target.value as any })}>
                   <option value="Net">Net Premium</option>
                   <option value="OD">Only OD</option>
                   <option value="TP">Only TP</option>
@@ -308,17 +310,17 @@ const AdminPayoutRecords: React.FC = () => {
               {/* 3. Conditional Inputs based on Type */}
               {editingRecord.commissionOn === 'ONLINE POINTS' ? (
                 <div className="col-span-full bg-purple-50/20 p-6 rounded-3xl border border-purple-100 border-dashed">
-                  <SmartEditInput label="3. Points Value" value={editingRecord.points} onChange={v => setEditingRecord({ ...editingRecord, points: Number(v) })} type="number" />
+                  <SmartEditInput label="3. Points Value" id="edit-payout-points" name="points" value={editingRecord.points} onChange={v => setEditingRecord({ ...editingRecord, points: Number(v) })} type="number" />
                 </div>
               ) : editingRecord.commissionOn === 'OD+TP' ? (
                 <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-50/20 dark:bg-blue-900/10 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30">
                   <div className="space-y-4">
-                    <SmartEditInput label="OD Premium" value={editingRecord.odPremium} onChange={v => setEditingRecord({ ...editingRecord, odPremium: Number(v) })} type="number" />
-                    <SmartEditInput label="OD Commission (%)" value={editingRecord.odPercentage} onChange={v => setEditingRecord({ ...editingRecord, odPercentage: Number(v) })} type="number" />
+                    <SmartEditInput label="OD Premium" id="edit-payout-od-premium" name="odPremium" value={editingRecord.odPremium} onChange={v => setEditingRecord({ ...editingRecord, odPremium: Number(v) })} type="number" />
+                    <SmartEditInput label="OD Commission (%)" id="edit-payout-od-percent" name="odPercentage" value={editingRecord.odPercentage} onChange={v => setEditingRecord({ ...editingRecord, odPercentage: Number(v) })} type="number" />
                   </div>
                   <div className="space-y-4">
-                    <SmartEditInput label="TP Premium" value={editingRecord.tpPremium} onChange={v => setEditingRecord({ ...editingRecord, tpPremium: Number(v) })} type="number" />
-                    <SmartEditInput label="TP Commission (%)" value={editingRecord.tpPercentage} onChange={v => setEditingRecord({ ...editingRecord, tpPercentage: Number(v) })} type="number" />
+                    <SmartEditInput label="TP Premium" id="edit-payout-tp-premium" name="tpPremium" value={editingRecord.tpPremium} onChange={v => setEditingRecord({ ...editingRecord, tpPremium: Number(v) })} type="number" />
+                    <SmartEditInput label="TP Commission (%)" id="edit-payout-tp-percent" name="tpPercentage" value={editingRecord.tpPercentage} onChange={v => setEditingRecord({ ...editingRecord, tpPercentage: Number(v) })} type="number" />
                   </div>
                 </div>
               ) : (
@@ -326,6 +328,8 @@ const AdminPayoutRecords: React.FC = () => {
                   {/* Dynamic Label for Box 3 */}
                   <SmartEditInput
                     label={`3. ${editingRecord.commissionOn === 'Net' ? 'Net Premium' : editingRecord.commissionOn === 'OD' ? 'OD Premium' : 'TP Premium'}`}
+                    id="edit-payout-base-premium"
+                    name="basePremium"
                     value={
                       editingRecord.commissionOn === 'Net' ? editingRecord.netPremium :
                         editingRecord.commissionOn === 'OD' ? editingRecord.odPremium :
@@ -339,7 +343,7 @@ const AdminPayoutRecords: React.FC = () => {
                     }}
                     type="number"
                   />
-                  <SmartEditInput label="4. Commission (%)" value={editingRecord.commissionRate} onChange={v => setEditingRecord({ ...editingRecord, commissionRate: Number(v) })} type="number" />
+                  <SmartEditInput label="4. Commission (%)" id="edit-payout-comm-rate" name="commissionRate" value={editingRecord.commissionRate} onChange={v => setEditingRecord({ ...editingRecord, commissionRate: Number(v) })} type="number" />
                 </div>
               )}
 
@@ -362,9 +366,9 @@ const AdminPayoutRecords: React.FC = () => {
               </div>
 
               {/* 8, 9, 10. Manual Adjustments */}
-              <SmartEditInput label="8. Discount" value={editingRecord.discount} onChange={v => setEditingRecord({ ...editingRecord, discount: Number(v) })} type="number" className="border-orange-100" />
-              <SmartEditInput label="9. Broker Payment" value={editingRecord.brokerPayment} onChange={v => setEditingRecord({ ...editingRecord, brokerPayment: Number(v) })} type="number" className="border-purple-100" />
-              <SmartEditInput label="10. Other Expense" value={editingRecord.otherExpense} onChange={v => setEditingRecord({ ...editingRecord, otherExpense: Number(v) })} type="number" className="border-gray-200" />
+              <SmartEditInput label="8. Discount" id="edit-payout-discount" name="discount" value={editingRecord.discount} onChange={v => setEditingRecord({ ...editingRecord, discount: Number(v) })} type="number" className="border-orange-100" />
+              <SmartEditInput label="9. Broker Payment" id="edit-payout-brokerage" name="brokerPayment" value={editingRecord.brokerPayment} onChange={v => setEditingRecord({ ...editingRecord, brokerPayment: Number(v) })} type="number" className="border-purple-100" />
+              <SmartEditInput label="10. Other Expense" id="edit-payout-expense" name="otherExpense" value={editingRecord.otherExpense} onChange={v => setEditingRecord({ ...editingRecord, otherExpense: Number(v) })} type="number" className="border-gray-200" />
 
               {/* 11. Final Profit */}
               <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl border-2 border-green-200 dark:border-green-800 col-span-full">
@@ -374,7 +378,7 @@ const AdminPayoutRecords: React.FC = () => {
 
               <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Payment Status</label>
-                <select className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.paymentReceived} onChange={e => setEditingRecord({ ...editingRecord, paymentReceived: e.target.value as any })}>
+                <select id="payout-payment-status" name="paymentReceived" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.paymentReceived} onChange={e => setEditingRecord({ ...editingRecord, paymentReceived: e.target.value as any })}>
                   <option value="Yes">Received</option>
                   <option value="No">Pending</option>
                 </select>
@@ -382,7 +386,7 @@ const AdminPayoutRecords: React.FC = () => {
 
               <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Remarks</label>
-                <select className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.remarks} onChange={e => setEditingRecord({ ...editingRecord, remarks: e.target.value as any })}>
+                <select id="payout-remarks" name="remarks" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.remarks} onChange={e => setEditingRecord({ ...editingRecord, remarks: e.target.value as any })}>
                   <option value="New">New Business</option>
                   <option value="Renewal">Renewal Case</option>
                 </select>
@@ -418,19 +422,19 @@ const AdminPayoutRecords: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 p-8 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 lg:grid-cols-6 gap-4">
         <div className="relative lg:col-span-2">
           <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-          <input type="text" placeholder="Search Customer, ID or Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <input type="text" id="ledger-search" name="searchQuery" placeholder="Search Customer, ID or Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
-        <select className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterPolicyType} onChange={e => setFilterPolicyType(e.target.value)}>
+        <select id="ledger-filter-policy" name="filterPolicyType" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterPolicyType} onChange={e => setFilterPolicyType(e.target.value)}>
           <option value="all">All Policies</option>
           <option value="TP">TP Only</option>
           <option value="OD">OD Only</option>
           <option value="COMPREHENSIVE">COMPREHENSIVE</option>
         </select>
-        <select className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs lg:col-span-2" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
+        <select id="ledger-filter-aggregator" name="filterAggregator" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs lg:col-span-2" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
           <option value="all">All Aggregators</option>
           {WEB_AGGREGATORS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
-        <select className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+        <select id="ledger-filter-status" name="filterStatus" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
           <option value="all">All Status</option>
           <option value="received">Received</option>
           <option value="pending">Pending</option>
@@ -538,10 +542,10 @@ const StatBox = ({ label, value, color, bg, icon }: any) => (
   </div>
 );
 
-const SmartEditInput = ({ label, value, onChange, type = "text", className = "" }: any) => (
+const SmartEditInput = ({ label, value, onChange, type = "text", className = "", id, name }: any) => (
   <div className={`p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-50 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] ${className}`}>
-    <label className="block text-[8px] font-black uppercase text-gray-400 mb-1">{label}</label>
-    <input type={type} className="w-full bg-transparent outline-none font-bold text-sm dark:text-white" value={value ?? ''} onChange={e => onChange(e.target.value)} />
+    <label className="block text-[8px] font-black uppercase text-gray-400 mb-1" htmlFor={id}>{label}</label>
+    <input id={id} name={name || id} type={type} className="w-full bg-transparent outline-none font-bold text-sm dark:text-white" value={value ?? ''} onChange={e => onChange(e.target.value)} />
   </div>
 );
 

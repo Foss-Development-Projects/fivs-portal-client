@@ -141,6 +141,8 @@ const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
           <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
           <input
             type="text"
+            id="renewal-search"
+            name="renewalQuery"
             placeholder="Search Vehicle No or Name..."
             className="w-full md:w-80 pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none focus:border-[#2E7D32]"
             value={searchQuery}
@@ -195,8 +197,8 @@ const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
                             onClick={() => handleStartRenewal(lead)}
                             disabled={!isEditable}
                             className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isEditable
-                                ? 'bg-[#2E7D32] text-white shadow-lg hover:bg-[#1b5e20] transform hover:-translate-y-1'
-                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              ? 'bg-[#2E7D32] text-white shadow-lg hover:bg-[#1b5e20] transform hover:-translate-y-1'
+                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                               }`}
                           >
                             {isEditable ? 'Renew Now' : `Opens in ${daysLeft - 10} Days`}
@@ -244,7 +246,7 @@ const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
                   onClick={() => fileInputRef.current?.click()}
                   className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-[#2E7D32] transition-colors bg-gray-50 dark:bg-gray-900"
                 >
-                  <input type="file" multiple ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
+                  <input type="file" multiple id="renewal-file-upload" name="renewalFiles" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
                   <span className="material-icons-outlined text-4xl text-gray-300 mb-2">cloud_upload</span>
                   <p className="text-[10px] font-black uppercase text-gray-400">Click to add files</p>
                   <p className="text-[9px] font-bold text-[#2E7D32] mt-2">{uploadedFiles.length} files added</p>

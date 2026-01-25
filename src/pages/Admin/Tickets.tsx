@@ -126,6 +126,8 @@ const AdminTickets: React.FC = () => {
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Your Response</label>
                   <textarea
+                    id="admin-ticket-reply"
+                    name="adminReply"
                     rows={6}
                     required
                     className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold text-sm"

@@ -70,6 +70,8 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Problem Subject</label>
                 <input
                   type="text"
+                  id="ticket-subject"
+                  name="subject"
                   required
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
                   placeholder="Brief issue title"
@@ -80,6 +82,8 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Department / Category</label>
                 <select
+                  id="ticket-category"
+                  name="category"
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none bg-white dark:bg-gray-800 transition-all font-bold"
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
@@ -90,6 +94,8 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Urgency</label>
                 <select
+                  id="ticket-priority"
+                  name="priority"
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-red-500 outline-none bg-white dark:bg-gray-800 transition-all font-bold"
                   value={formData.priority}
                   onChange={e => setFormData({ ...formData, priority: e.target.value })}
@@ -103,6 +109,8 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
             <div>
               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Detailed Description</label>
               <textarea
+                id="ticket-description"
+                name="description"
                 rows={5}
                 required
                 className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
@@ -134,7 +142,7 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
             >
               <div className="flex items-center space-x-6">
                 <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all group-hover:scale-110 ${ticket.status === 'open' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600' :
-                    ticket.status === 'resolved' ? 'bg-green-50 dark:bg-green-900/30 text-green-600' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
+                  ticket.status === 'resolved' ? 'bg-green-50 dark:bg-green-900/30 text-green-600' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
                   }`}>
                   <span className="material-icons-outlined text-3xl">confirmation_number</span>
                 </div>
@@ -152,7 +160,7 @@ const PartnerTickets: React.FC<{ user: User }> = ({ user }) => {
               <div className="flex items-center space-x-8 mt-6 md:mt-0">
                 <div className="text-right">
                   <span className={`px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${ticket.status === 'open' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' :
-                      ticket.status === 'resolved' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-400 border-gray-100'
+                    ticket.status === 'resolved' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-400 border-gray-100'
                     }`}>{ticket.status.replace('-', ' ')}</span>
                   {ticket.adminResponse && (
                     <p className="text-[10px] text-[#2E7D32] font-black uppercase mt-2 tracking-tighter flex items-center justify-end">

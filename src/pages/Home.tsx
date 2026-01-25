@@ -189,9 +189,11 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                   <form onSubmit={handleSubmit} className="space-y-6 relative">
                     {!isLogin && (
                       <div className="space-y-2 group">
-                        <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">Full Name</label>
+                        <label htmlFor="auth-name" className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">Full Name</label>
                         <input
                           type="text"
+                          id="auth-name"
+                          name="name"
                           required
                           className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                           placeholder="Enter your name"
@@ -205,6 +207,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                       <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">EMAIL ADDRESS</label>
                       <input
                         type="email"
+                        id="auth-email"
+                        name="email"
                         required
                         className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                         placeholder="email@example.com"
@@ -218,6 +222,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                         <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">Mobile Number</label>
                         <input
                           type="tel"
+                          id="auth-mobile"
+                          name="mobile"
                           required
                           className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                           placeholder="9876543210"
@@ -231,6 +237,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                       <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">PASSWORD</label>
                       <input
                         type="password"
+                        id="auth-password"
+                        name="password"
                         required
                         className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                         placeholder="••••••••"

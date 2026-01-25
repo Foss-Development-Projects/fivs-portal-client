@@ -339,12 +339,12 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Customer Full Name</label>
-                      <input type="text" required placeholder="Enter Name" className="w-full px-5 py-4 rounded-2xl border dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:ring-1 focus:ring-[#2E7D32]" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                      <input type="text" id="lead-customer-name" name="customerName" required placeholder="Enter Name" className="w-full px-5 py-4 rounded-2xl border dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:ring-1 focus:ring-[#2E7D32]" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
-                      <input type="tel" required pattern="[0-9]{10}" placeholder="10-Digit Mobile" className="w-full px-5 py-4 rounded-2xl border dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:ring-1 focus:ring-[#2E7D32]" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} />
+                      <input type="tel" id="lead-customer-mobile" name="customerMobile" required pattern="[0-9]{10}" placeholder="10-Digit Mobile" className="w-full px-5 py-4 rounded-2xl border dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:ring-1 focus:ring-[#2E7D32]" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} />
                     </div>
 
                     <div className="space-y-2">
@@ -366,6 +366,8 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
                             <label key={company} className="flex items-center space-x-3 cursor-pointer group">
                               <input
                                 type="checkbox"
+                                id={`insurer-${company}`}
+                                name="preferredInsurers"
                                 className="w-4 h-4 rounded border-gray-300 text-[#2E7D32] focus:ring-[#2E7D32]"
                                 checked={formData.preferredInsurers.includes(company)}
                                 onChange={() => toggleInsurer(company)}
@@ -383,6 +385,8 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Special Instructions</label>
                   <textarea
+                    id="lead-special-note"
+                    name="specialNote"
                     placeholder="Special Note / Instructions (Optional)"
                     rows={4}
                     className="w-full px-5 py-4 rounded-2xl border dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:ring-1 focus:ring-[#2E7D32] resize-none"
@@ -504,6 +508,8 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
               <div className="p-6 border-t dark:border-gray-800 bg-gray-50 dark:bg-gray-900 flex items-center gap-3 sticky bottom-0 z-20">
                 <input
                   type="file"
+                  id="chat-file-upload"
+                  name="chatFile"
                   ref={chatFileInputRef}
                   className="hidden"
                   onChange={handleChatFileUpload}
@@ -517,6 +523,8 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
                 </button>
                 <input
                   type="text"
+                  id="chat-message-input"
+                  name="chatMessage"
                   placeholder="Type your question..."
                   className="flex-1 px-5 py-3 text-sm border dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-2xl outline-none focus:ring-1 focus:ring-[#2E7D32] transition-all bg-white dark:bg-gray-950"
                   value={chatMessage}

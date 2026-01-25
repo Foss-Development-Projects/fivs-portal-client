@@ -58,6 +58,8 @@ const AdminPartners: React.FC = () => {
             <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
             <input
               type="text"
+              id="partner-filter-input"
+              name="partnerFilter"
               placeholder="Filter by name or UID..."
               className="pl-12 pr-4 py-3 border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-2xl outline-none focus:border-[#2E7D32] min-w-[320px] shadow-sm transition-all font-medium text-sm"
             />

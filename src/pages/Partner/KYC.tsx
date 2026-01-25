@@ -38,7 +38,7 @@ const FileInput = ({ label, id, fileData, onUpload, disabled }: { label: string,
       <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">{label}</label>
       <div className={`relative border-2 border-dashed rounded-3xl p-6 transition-colors flex items-center justify-center cursor-pointer group ${fileData ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-gray-50 hover:border-[#2E7D32]'
         } ${disabled ? 'cursor-not-allowed opacity-75' : ''}`}>
-        {!disabled && <input type="file" accept="image/*,application/pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id={id} onChange={handleFileChange} />}
+        {!disabled && <input type="file" accept="image/*,application/pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id={id} name={id} onChange={handleFileChange} />}
         <div className="text-center overflow-hidden max-w-full">
           {fileData ? (
             <div className="flex flex-col items-center">
@@ -204,6 +204,8 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Account Holder</label>
                     <input
                       type="text"
+                      id="kyc-account-holder"
+                      name="accountHolder"
                       disabled={isLocked}
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       value={bankDetails.accountHolder}
@@ -214,6 +216,8 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Account Number</label>
                     <input
                       type="text"
+                      id="kyc-account-number"
+                      name="accountNumber"
                       disabled={isLocked}
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="0000 0000 0000"
@@ -225,6 +229,8 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">IFSC Code</label>
                     <input
                       type="text"
+                      id="kyc-ifsc-code"
+                      name="ifscCode"
                       disabled={isLocked}
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="SBIN0000..."
@@ -236,6 +242,8 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Bank Name</label>
                     <input
                       type="text"
+                      id="kyc-bank-name"
+                      name="bankName"
                       disabled={isLocked}
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="State Bank of India"

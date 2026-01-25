@@ -77,6 +77,8 @@ const AdminNotifications: React.FC = () => {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Select Recipient</label>
                 <select
+                  id="notif-recipient"
+                  name="recipientId"
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-white outline-none focus:border-blue-500 transition-all font-bold"
                   value={selectedRecipient}
                   onChange={e => setSelectedRecipient(e.target.value)}
@@ -91,6 +93,8 @@ const AdminNotifications: React.FC = () => {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Message Type</label>
                 <select
+                  id="notif-type"
+                  name="notifType"
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-white outline-none focus:border-blue-500 transition-all font-bold"
                   value={type}
                   onChange={e => setType(e.target.value as any)}
@@ -105,6 +109,8 @@ const AdminNotifications: React.FC = () => {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Urgency</label>
                 <select
+                  id="notif-priority"
+                  name="priority"
                   className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-white outline-none focus:border-red-500 transition-all font-bold"
                   value={priority}
                   onChange={e => setPriority(e.target.value as any)}
@@ -119,6 +125,8 @@ const AdminNotifications: React.FC = () => {
               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Header / Title</label>
               <input
                 type="text"
+                id="notif-title"
+                name="title"
                 required
                 className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-white outline-none focus:border-[#2E7D32] transition-all font-bold"
                 placeholder="e.g. Mandatory Training for Motor Insurance"
@@ -130,6 +138,8 @@ const AdminNotifications: React.FC = () => {
             <div>
               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Message Content</label>
               <textarea
+                id="notif-message"
+                name="message"
                 required
                 rows={5}
                 className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-700 dark:text-white outline-none focus:border-[#2E7D32] transition-all font-bold"

@@ -202,6 +202,8 @@ const AdminPayouts: React.FC = () => {
                 <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4 ml-2">Bank Transaction / UTR ID (Mandatory)</label>
                 <input
                   type="text"
+                  id="settlement-tx-id"
+                  name="transactionId"
                   required
                   autoFocus
                   className="w-full px-8 py-5 rounded-3xl border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-black text-2xl tracking-tight text-center shadow-inner"
