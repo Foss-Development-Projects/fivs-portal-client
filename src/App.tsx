@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { User, UserRole, UserStatus, KYCStatus, Lead, LeadStatus, Transaction, Notification, Ticket, Banner, PayoutReport, ProfitReport, AutoFetchRecord, AdminPayoutRecord } from './types';
-import { Layout } from './components/Layout';
+import { Layout } from './layout/Layout';
 import { StateContext } from './context';
 import { portalApi as api } from '@/services/portalApi';
 import { MOCK_ADMIN, MOCK_BANNERS } from './services/mockData';
@@ -24,7 +24,7 @@ import AdminNotifications from './pages/Admin/Notifications';
 import AdminTickets from './pages/Admin/Tickets';
 import AdminAutoFetch from './pages/Admin/AutoFetchRecords';
 
-import './css/app.css';
+import './assets/css/app.css';
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);

@@ -2,4 +2,4 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@config "./../../tailwind.config.js";
+@config "./../../../tailwind.config.js";

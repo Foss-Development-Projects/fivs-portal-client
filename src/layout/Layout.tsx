@@ -273,7 +273,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
           <div className="flex items-center space-x-2 sm:space-x-4">
             <button
               onClick={toggleDarkMode}
-              className="p-2 d-flex hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-400 transition-colors"
+              className="p-2 flex hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-400 transition-colors"
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               <span className="material-icons-outlined">

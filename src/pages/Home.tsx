@@ -157,7 +157,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
 
                   <div className="bg-[#f0f2f5] dark:bg-gray-800/50 p-1.5 rounded-[1.25rem] flex mb-9 relative">
                     <div
-                      className={`absolute inset-1.5 w-[calc(50%-6px)] bg-white dark:bg-gray-700 rounded-xl shadow-md transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isLogin ? 'translate-x-[calc(100%+6px)]' : 'translate-x-0'}`}
+                      className={`absolute inset-1.5 w-[calc(50%-6px)] bg-white dark:bg-gray-700 rounded-xl shadow-md transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isLogin ? 'translate-x-[calc(100%)]' : 'translate-x-0'}`}
                     />
                     <button
                       onClick={() => { setIsLogin(false); setError(null); }}
