@@ -1,11 +1,13 @@
 
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '@/context';
 import { KYCStatus, LeadStatus, UserStatus, Lead, User, Ticket } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const AdminDashboard: React.FC = () => {
   const { users, leads, tickets, darkMode } = useGlobalState();
+  const navigate = useNavigate();
 
   const stats = useMemo(() => {
     const finalizedLeads = leads.filter((l: Lead) => l.status === LeadStatus.CONVERTED || l.status === LeadStatus.POLICY_ISSUED);
@@ -26,10 +28,10 @@ const AdminDashboard: React.FC = () => {
   }, [users, leads, tickets]);
 
   const urgentActions = [
-    { label: 'New Registrations', count: stats.pendingRegistrations, color: 'text-blue-600 bg-blue-50', icon: 'person_add' },
-    { label: 'KYC Reviews', count: stats.pendingKYC, color: 'text-orange-600 bg-orange-50', icon: 'verified' },
-    { label: 'New Leads', count: stats.pendingLeads, color: 'text-green-600 bg-green-50', icon: 'assignment_late' },
-    { label: 'Open Tickets', count: stats.openTickets, color: 'text-red-600 bg-red-50', icon: 'support_agent' }
+    { label: 'New Registrations', count: stats.pendingRegistrations, color: 'text-blue-600 bg-blue-50', icon: 'person_add', path: '/partners' },
+    { label: 'KYC Reviews', count: stats.pendingKYC, color: 'text-orange-600 bg-orange-50', icon: 'verified', path: '/kyc-approval' },
+    { label: 'New Leads', count: stats.pendingLeads, color: 'text-green-600 bg-green-50', icon: 'assignment_late', path: '/all-leads' },
+    { label: 'Open Tickets', count: stats.openTickets, color: 'text-red-600 bg-red-50', icon: 'support_agent', path: '/admin-tickets' }
   ].filter(a => a.count > 0);
 
   const chartData = [
@@ -63,7 +65,7 @@ const AdminDashboard: React.FC = () => {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {urgentActions.map((action, i) => (
-              <div key={i} className={`p-4 rounded-2xl ${action.color} border transition-all hover:scale-[1.02] shadow-sm`}>
+              <div key={i} onClick={() => navigate(action.path)} className={`p-4 rounded-2xl ${action.color} border transition-all hover:scale-[1.02] shadow-sm cursor-pointer`}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="material-icons-outlined text-lg">{action.icon}</span>
                   <span className="text-xl font-black">{action.count}</span>
