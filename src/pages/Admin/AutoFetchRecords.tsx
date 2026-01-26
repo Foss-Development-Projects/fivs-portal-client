@@ -752,12 +752,7 @@ const DataEntryLedger: React.FC = () => {
                         {formData.contacts?.map((contact) => (
                           <div key={contact.id} className="p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-700 grid grid-cols-3 gap-3 relative group">
                             <SmartInput label="Contact Name" value={contact.name} onChange={v => updateContact(contact.id, 'name', v)} />
-                            <div className="space-y-1">
-                              <label className="text-[8px] font-black uppercase text-gray-400">Relation</label>
-                              <select className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={contact.relation} onChange={e => updateContact(contact.id, 'relation', e.target.value)}>
-                                {RELATIONS_LIST.map(r => <option key={r} value={r}>{r}</option>)}
-                              </select>
-                            </div>
+                            <SmartInput label="Relation" value={contact.relation} onChange={(v: string) => updateContact(contact.id, 'relation', v)} />
                             <SmartInput label="Phone" value={contact.phone} onChange={v => updateContact(contact.id, 'phone', v)} />
                             <button onClick={() => handleRemoveContact(contact.id)} className="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-gray-700 text-red-500 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <span className="material-icons-outlined text-xs">close</span>

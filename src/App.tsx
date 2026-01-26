@@ -4,7 +4,6 @@ import { User, UserRole, UserStatus, KYCStatus, Lead, LeadStatus, Transaction, N
 import { Layout } from './layout/Layout';
 import { StateContext } from './context';
 import { portalApi as api } from '@/services/portalApi';
-import { MOCK_ADMIN, MOCK_BANNERS } from './services/mockData';
 import Home from './pages/Home';
 import PartnerDashboard from './pages/Partner/Dashboard';
 import PartnerKYC from './pages/Partner/KYC';
