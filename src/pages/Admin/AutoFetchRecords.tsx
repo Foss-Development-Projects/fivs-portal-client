@@ -71,7 +71,22 @@ const DataEntryLedger: React.FC = () => {
       ...prev,
       documents: { ...prev.documents, [docKey]: blobUrl }
     }));
-    setIsProcessing(false);
+
+    // Trigger Automated Extraction (Tesseract OCR)
+    try {
+      // Only run for relevant front-facing docs
+      if (['policy', 'rc', 'pan', 'aadhaar'].includes(type as string)) {
+        const extracted = await api.extractDocumentData(blobUrl, type);
+        if (extracted && Object.keys(extracted).length > 0) {
+          setFormData(prev => ({ ...prev, ...extracted }));
+          // Optional: Show success toast or small indicator
+        }
+      }
+    } catch (err) {
+      console.error("AutoFetch Extraction Error:", err);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // Cleanup Blob URLs to prevent memory leaks
