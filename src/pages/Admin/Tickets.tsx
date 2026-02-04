@@ -4,7 +4,7 @@ import { useGlobalState } from '@/context';
 import { Ticket } from '@/types';
 
 const AdminTickets: React.FC = () => {
-  const { tickets, updateTicket, users } = useGlobalState();
+  const { tickets, updateTicket, users, showAlert } = useGlobalState();
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [adminReply, setAdminReply] = useState('');
   const [newStatus, setNewStatus] = useState<Ticket['status']>('in-progress');
@@ -23,9 +23,9 @@ const AdminTickets: React.FC = () => {
       });
       setSelectedTicket(null);
       setAdminReply('');
-      alert("Response sent successfully!");
+      showAlert('Resolution Sent', "Response sent successfully and ticket updated.", 'success');
     } catch (err) {
-      alert("Failed to update ticket.");
+      showAlert('Update Failed', "Failed to update ticket status or response.", 'error');
     }
   };
 

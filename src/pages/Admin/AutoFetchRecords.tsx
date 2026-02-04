@@ -7,7 +7,7 @@ import { WEB_AGGREGATORS, INSURANCE_COMPANIES, RELATIONS_LIST } from '@/constant
 
 // Data Entry Ledger Component
 const DataEntryLedger: React.FC = () => {
-  const { autoFetchRecords, saveAutoFetchRecord, deleteAutoFetchRecord, saveAdminPayoutRecord, adminPayoutRecords } = useGlobalState();
+  const { autoFetchRecords, saveAutoFetchRecord, deleteAutoFetchRecord, saveAdminPayoutRecord, adminPayoutRecords, showAlert, showConfirm } = useGlobalState();
   const [activeView, setActiveView] = useState<'table' | 'wizard'>('table');
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -206,7 +206,7 @@ const DataEntryLedger: React.FC = () => {
 
       await saveAdminPayoutRecord(payoutPayload);
 
-      alert("Record Saved Successfully!");
+      showAlert('Save Successful', "Intelligence record has been recorded and payout log generated.", 'success');
       setActiveView('table');
       setFormData(initialRecord);
       setFileObjects({});
@@ -215,16 +215,22 @@ const DataEntryLedger: React.FC = () => {
     } catch (err: any) {
       console.error("Submission Error", err);
       setErrorMessage(`Failed to save record: ${err.message || 'Unknown Server Error'}`);
-      alert(`Submission Failed: ${err.message}. Check console for details.`);
+      showAlert('Submission Critical', `System failed to save record: ${err.message}. Please check logs.`, 'error');
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm(`Are you sure you want to permanently REMOVE record ${id}? Associated Payout Record will also be deleted.`)) {
-      await deleteAutoFetchRecord(id);
-    }
+    showConfirm(
+      'Confirm Deletion',
+      `Are you sure you want to permanently REMOVE record ${id}? Associated Payout Record will also be deleted.`,
+      async () => {
+        await deleteAutoFetchRecord(id);
+        showAlert('Record Removed', `Intelligence record ${id} and associated payout logs have been deleted successfully.`, 'success');
+      },
+      'error'
+    );
   };
 
   const filteredRecords = useMemo(() => {
@@ -253,7 +259,10 @@ const DataEntryLedger: React.FC = () => {
   }, [autoFetchRecords, searchQuery, filterStatus, filterAggregator, filterMonth, startDate, endDate]);
 
   const handleCsvExport = () => {
-    if (filteredRecords.length === 0) return alert("No records match the current filters.");
+    if (filteredRecords.length === 0) {
+      showAlert('Filter Alert', "No records match the current filters.", 'info');
+      return;
+    }
     const headers = ["Timestamp", "Lead ID", "Owner Name", "Mobile", "Vehicle Reg No", "Policy No", "Aggregator", "Insurance Co", "Renewal Date", "Status", "Last Updated"];
     const rows = filteredRecords.map(r => [`"${r.timestamp}"`, `"${r.id}"`, `"${r.ownerName}"`, `"${r.ownerPhone}"`, `"${r.vehicleRegNo}"`, `"${r.policyNo}"`, `"${r.webAggregator}"`, `"${r.insuranceCompany}"`, `"${r.renewalDate}"`, `"${r.status}"`, `"${new Date(r.lastUpdated).toLocaleString()}"`]);
     const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");

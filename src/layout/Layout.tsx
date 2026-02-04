@@ -52,7 +52,7 @@ const SidebarItem: React.FC<{ to?: string, icon: string, label: string, badgeCou
 export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [lastSync, setLastSync] = useState<string>(new Date().toLocaleTimeString());
-  const { darkMode, toggleDarkMode, notifications, tickets, isLoading, leads } = useGlobalState();
+  const { darkMode, toggleDarkMode, notifications, tickets, isLoading, leads, showAlert } = useGlobalState();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -115,7 +115,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
 
   const handleCopyId = () => {
     navigator.clipboard.writeText(user.id);
-    alert('Partner ID copied to clipboard');
+    showAlert('Copied', 'Partner ID has been copied to clipboard.', 'success');
   };
 
   const handleBackup = async () => {
@@ -128,7 +128,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
       a.download = `FIVS_Database_Backup_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
     } catch (err) {
-      alert("Failed to export backup.");
+      showAlert('Export Error', "Failed to export system backup.", 'error');
     }
   };
 
@@ -139,10 +139,10 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
     reader.onload = async (ev) => {
       try {
         await api.importDatabase(ev.target?.result as string);
-        alert("Database restored successfully. Refreshing portal...");
+        showAlert('Migration Success', "Database restored successfully. Portal environment is refreshing...", 'success');
         window.location.reload();
       } catch (err) {
-        alert("Invalid backup file.");
+        showAlert('Integrity Error', "Invalid backup file format or data corrupted.", 'error');
       }
     };
     reader.readAsText(file);

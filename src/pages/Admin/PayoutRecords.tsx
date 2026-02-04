@@ -5,7 +5,7 @@ import { AdminPayoutRecord } from '@/types';
 import { WEB_AGGREGATORS } from '@/constants';
 
 const AdminPayoutRecords: React.FC = () => {
-  const { adminPayoutRecords, saveAdminPayoutRecord, deleteAdminPayoutRecord, autoFetchRecords } = useGlobalState();
+  const { adminPayoutRecords, saveAdminPayoutRecord, deleteAdminPayoutRecord, autoFetchRecords, showAlert, showConfirm } = useGlobalState();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPolicyType, setFilterPolicyType] = useState('all');
   const [filterAggregator, setFilterAggregator] = useState('all');
@@ -129,7 +129,10 @@ const AdminPayoutRecords: React.FC = () => {
   };
 
   const handleCsvExport = () => {
-    if (filteredRecords.length === 0) return alert("No records match the current filters.");
+    if (filteredRecords.length === 0) {
+      showAlert('Export Failed', "No records match the current filters.", 'info');
+      return;
+    }
 
     const headers = [
       "DATE", "LEAD ID", "CUSTOMER NAME", "VEHICLE NUMBER", "INSURER",
@@ -608,7 +611,15 @@ const AdminPayoutRecords: React.FC = () => {
                     <button onClick={() => setEditingRecord(rec)} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-gray-400 hover:text-[#2E7D32] transition-all shadow-sm">
                       <span className="material-icons-outlined text-lg">edit</span>
                     </button>
-                    <button onClick={() => confirm(`Permanently delete payout record for ${rec.id}?`) && deleteAdminPayoutRecord(rec.id)} className="p-3 bg-red-50 dark:bg-red-900/10 rounded-xl text-red-400 hover:text-red-600 transition-all shadow-sm">
+                    <button
+                      onClick={() => showConfirm(
+                        'Confirm Removal',
+                        `Permanently delete payout record for ${rec.id}? This action cannot be undone.`,
+                        () => deleteAdminPayoutRecord(rec.id),
+                        'error'
+                      )}
+                      className="p-3 bg-red-50 dark:bg-red-900/10 rounded-xl text-red-400 hover:text-red-600 transition-all shadow-sm"
+                    >
                       <span className="material-icons-outlined text-lg">delete_sweep</span>
                     </button>
                   </div>

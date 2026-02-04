@@ -5,7 +5,7 @@ import { useGlobalState } from '@/context';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES } from '@/constants';
 
 const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
-  const { leads, updateLead } = useGlobalState();
+  const { leads, updateLead, showAlert, showConfirm } = useGlobalState();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'missed'>('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
@@ -114,20 +114,23 @@ const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
       });
 
       setEditingLead(null);
-      alert("Renewal submitted successfully! The lead is now open for tracking.");
+      showAlert('Renewal Submitted', "Renewal submitted successfully! The lead is now open for tracking.", 'success');
     } catch (err) {
-      alert("Failed to submit renewal.");
+      showAlert('Submission Failed', "Failed to submit renewal request. Please check your connection.", 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleRestore = async (lead: Lead) => {
-    if (confirm("Restore this missed lead for renewal submission?")) {
-      // Effectively just sets the renewal date to today so it appears in "Upcoming/Due"
-      // Or we can just open the edit modal directly.
-      handleStartRenewal(lead);
-    }
+    showConfirm(
+      'Restore Lead',
+      "Restore this missed lead for renewal submission?",
+      () => {
+        handleStartRenewal(lead);
+      },
+      'info'
+    );
   };
 
   return (

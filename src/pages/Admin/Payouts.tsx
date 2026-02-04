@@ -4,7 +4,7 @@ import { useGlobalState } from '@/context';
 import { User, Lead, PayoutStatus } from '@/types';
 
 const AdminPayouts: React.FC = () => {
-  const { leads, users, updateLead, generateProfitReport, adminProfitReports } = useGlobalState();
+  const { leads, users, updateLead, generateProfitReport, adminProfitReports, showAlert } = useGlobalState();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [txId, setTxId] = useState('');
 
@@ -13,7 +13,10 @@ const AdminPayouts: React.FC = () => {
 
   const handleSettle = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedLead || !txId) return alert("UTR / Bank Transaction ID is required for settlement.");
+    if (!selectedLead || !txId) {
+      showAlert('Missing Information', "UTR / Bank Transaction ID is required for payout settlement.", 'warning');
+      return;
+    }
     try {
       await updateLead(selectedLead.id, {
         payoutStatus: 'credited',
@@ -22,16 +25,16 @@ const AdminPayouts: React.FC = () => {
       });
       setSelectedLead(null);
       setTxId('');
-      alert("Payout settled successfully. Lead marked as Credited.");
+      showAlert('Settlement Successful', "Payout processed successfully. Lead has been marked as Credited.", 'success');
     } catch (err) {
-      alert("Failed to process payout. Please try again.");
+      showAlert('Process Error', "Failed to process payout. Please check connection and try again.", 'error');
     }
   };
 
   const handleGenerateProfitLog = () => {
     const month = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     generateProfitReport(month);
-    alert(`Profit Log generated for ${month}. This updates your dashboard parameters instantly.`);
+    showAlert('Report Generated', `Profit Log generated for ${month}. Your dashboard parameters have been updated.`, 'success');
   };
 
   const handleDownload = (data: string, name: string) => {

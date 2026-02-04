@@ -4,7 +4,7 @@ import { useGlobalState } from '@/context';
 import { KYCStatus } from '@/types';
 
 const AdminKYC: React.FC = () => {
-  const { users, updateUser, resetKYC, selectedPartnerIdForKyc, setSelectedPartnerIdForKyc } = useGlobalState();
+  const { users, updateUser, resetKYC, selectedPartnerIdForKyc, setSelectedPartnerIdForKyc, showAlert, showConfirm } = useGlobalState();
   const [viewMode, setViewMode] = useState<'pending' | 'verified'>('pending');
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
@@ -29,22 +29,27 @@ const AdminKYC: React.FC = () => {
     try {
       await updateUser(id, { kycStatus: status, kycReason: reason });
     } catch (err) {
-      alert("Error updating KYC status");
+      showAlert('Update Failed', "Error updating KYC status", 'error');
     }
   };
 
   const handleReset = async (id: string) => {
-    if (confirm("Are you sure you want to RESET this partner's KYC? This will remove all uploaded documents and lock their wallet immediately.")) {
-      try {
-        await resetKYC(id);
-        if (selectedPartnerIdForKyc === id) {
-          setSelectedPartnerIdForKyc(null);
+    showConfirm(
+      'Reset KYC Profile',
+      "Are you sure you want to RESET this partner's KYC? This will remove all uploaded documents and lock their wallet immediately.",
+      async () => {
+        try {
+          await resetKYC(id);
+          if (selectedPartnerIdForKyc === id) {
+            setSelectedPartnerIdForKyc(null);
+          }
+          showAlert('Reset Successful', "KYC reset successfully. The partner has been notified.", 'success');
+        } catch (err) {
+          showAlert('Reset Failed', "Failed to reset KYC status", 'error');
         }
-        alert("KYC reset successfully");
-      } catch (err) {
-        alert("Failed to reset KYC");
-      }
-    }
+      },
+      'error'
+    );
   };
 
   return (
@@ -137,7 +142,7 @@ const AdminKYC: React.FC = () => {
                         {partner.category || 'N/A'}
                       </span>
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${partner.kycStatus === KYCStatus.APPROVED ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
-                          partner.kycStatus === KYCStatus.REJECTED ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' : 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
+                        partner.kycStatus === KYCStatus.REJECTED ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' : 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
                         }`}>
                         {partner.kycStatus.replace('_', ' ')}
                       </span>

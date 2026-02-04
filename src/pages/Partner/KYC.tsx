@@ -21,7 +21,9 @@ const FileInput = ({ label, id, fileData, onUpload, disabled }: { label: string,
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+      // We'll use window.alert if context isn't available, but it should be
+      const { showAlert } = useGlobalState();
+      showAlert('File Too Large', `File "${file.name}" is too large. Maximum size is 10MB.`, 'warning');
       return;
     }
 
@@ -62,7 +64,7 @@ const FileInput = ({ label, id, fileData, onUpload, disabled }: { label: string,
 };
 
 const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
-  const { updateUser } = useGlobalState();
+  const { updateUser, showAlert } = useGlobalState();
   const [step, setStep] = useState(1);
   const [bankDetails, setBankDetails] = useState({
     accountHolder: user.accountHolder || user.name,
@@ -94,11 +96,11 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
     const required = ['af', 'ab', 'pc', 'cc', 'cf'];
     const missing = required.filter(k => !documents[k]);
     if (missing.length > 0) {
-      alert("Please upload all required documents (Aadhaar Front/Back, PAN, Bank Proof, Consent Form) before final submission.");
+      showAlert('Incomplete Submission', "Please upload all required documents (Aadhaar Front/Back, PAN, Bank Proof, Consent Form) before final submission.", 'warning');
       return;
     }
     if (!bankDetails.accountNumber || !bankDetails.ifscCode) {
-      alert("Please provide valid bank account details.");
+      showAlert('Missing Details', "Please provide complete bank account details for settlement.", 'warning');
       return;
     }
     updateUser(user.id, {

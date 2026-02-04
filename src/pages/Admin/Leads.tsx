@@ -5,7 +5,7 @@ import { LeadStatus, Lead, PayoutStatus, LeadMessage } from '@/types';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES } from '@/constants';
 
 const AdminLeads: React.FC = () => {
-  const { leads, users, updateLead, currentUser } = useGlobalState();
+  const { leads, users, updateLead, currentUser, showAlert } = useGlobalState();
 
   // Bug Fix: Store lead ID instead of the whole object to ensure the UI updates reactively 
   // when the global 'leads' array changes (e.g. when a new message is received).
@@ -72,10 +72,10 @@ const AdminLeads: React.FC = () => {
         status,
         adminNotes: issueData.adminNotes
       });
-      alert(`Lead status updated to ${status.replace('-', ' ')}`);
+      showAlert('Update Successful', `Lead status updated to ${status.replace('-', ' ')}`, 'success');
       if (status !== LeadStatus.POLICY_ISSUED) setViewingLeadId(null);
     } catch (err) {
-      alert("Error updating status.");
+      showAlert('Update Failed', "Error updating status.", 'error');
     }
   };
 
@@ -96,7 +96,7 @@ const AdminLeads: React.FC = () => {
       await updateLead(viewingLead.id, { messages: updatedMessages });
       setChatMessage('');
     } catch (err) {
-      alert("Failed to send message.");
+      showAlert('Message Error', "Failed to send message.", 'error');
     }
   };
 
@@ -118,12 +118,12 @@ const AdminLeads: React.FC = () => {
     if (!viewingLead) return;
 
     if (issueData.payoutStatus === 'credited' && !issueData.payoutTransactionId) {
-      alert("Transaction ID is required for 'Credited' status.");
+      showAlert('Missing Information', "Transaction ID is required for 'Credited' status.", 'warning');
       return;
     }
 
     if (!issueData.renewalDate) {
-      alert("Mandatory: Please enter the Next Renewal Date.");
+      showAlert('Missing Information', "Mandatory: Please enter the Next Renewal Date.", 'warning');
       return;
     }
 
@@ -143,10 +143,10 @@ const AdminLeads: React.FC = () => {
         policyType: issueData.policyType,
         renewalDate: issueData.renewalDate // Save mandatory renewal date
       });
-      alert("Policy Issued! Lead marked as Approved, Payout status updated, and Renewal scheduled.");
+      showAlert('Policy Issued', "Policy Issued! Lead marked as Approved, Payout status updated, and Renewal scheduled.", 'success');
       setViewingLeadId(null);
     } catch (err) {
-      alert("Error issuing policy.");
+      showAlert('Operational Error', "Error issuing policy.", 'error');
     }
   };
 

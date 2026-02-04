@@ -4,7 +4,7 @@ import { useGlobalState } from '@/context';
 import { NotificationType } from '@/types';
 
 const AdminNotifications: React.FC = () => {
-  const { users, sendNotification, notifications } = useGlobalState();
+  const { users, sendNotification, notifications, showAlert } = useGlobalState();
   const [isBroadcasting, setIsBroadcasting] = useState(true);
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [title, setTitle] = useState('');
@@ -18,7 +18,10 @@ const AdminNotifications: React.FC = () => {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !message) return;
-    if (!isBroadcasting && !selectedRecipient) return alert("Select a recipient.");
+    if (!isBroadcasting && !selectedRecipient) {
+      showAlert('Selection Required', "Please select a recipient partner for this message.", 'warning');
+      return;
+    }
 
     setIsSending(true);
     try {
@@ -31,9 +34,9 @@ const AdminNotifications: React.FC = () => {
       });
       setTitle('');
       setMessage('');
-      alert("Notification broadcasted successfully!");
+      showAlert('Broadcast Successful', "Notification has been dispatched to all selected recipients.", 'success');
     } catch (err) {
-      alert("Failed to send.");
+      showAlert('Send Failed', "Failed to dispatch notification. Please try again.", 'error');
     } finally {
       setIsSending(false);
     }
