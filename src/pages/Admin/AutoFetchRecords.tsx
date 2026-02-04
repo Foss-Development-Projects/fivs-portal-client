@@ -194,6 +194,7 @@ const DataEntryLedger: React.FC = () => {
           policyType: finalRecordData.insuranceType || 'N/A',
           premiumAmount: 0,
           commissionRate: 0,
+          tdsRate: 2, // Default 2%
           commissionOn: 'N/A',
           discount: 0,
           brokerPayment: 0,
@@ -265,8 +266,8 @@ const DataEntryLedger: React.FC = () => {
     setShowCsvDialog(false);
   };
 
-  const stepLabels = ["Insurance Policy", "Endorsement Copy", "RC Back", "RC Front", "PAN Card", "Aadhaar Front", "Aadhaar Back", "Voter Front", "Voter Back", "Manual Details"];
-  const totalSteps = 10;
+  const stepLabels = ["Insurance Policy", "Endorsement Copy", "Vehicle RC", "PAN Card", "Aadhaar Card", "Voter ID", "Manual Details"];
+  const totalSteps = 7;
   const nextStep = () => { setCurrentStep(prev => Math.min(prev + 1, totalSteps)); setErrorMessage(null); };
   const prevStep = () => { setCurrentStep(prev => Math.max(prev - 1, 1)); setErrorMessage(null); };
 
@@ -552,6 +553,7 @@ const DataEntryLedger: React.FC = () => {
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <SmartInput id="af-owner-name" label="Owner's Name" value={formData.ownerName} onChange={v => setFormData(prev => ({ ...prev, ownerName: v }))} />
                         <SmartInput id="af-policy-no" label="Policy No" value={formData.policyNo} onChange={v => setFormData(prev => ({ ...prev, policyNo: v }))} />
+                        <SmartInput id="af-policy-issue-date" label="Policy Issue Date" value={formData.policyIssueDate} onChange={v => setFormData(prev => ({ ...prev, policyIssueDate: v }))} type="date" />
                         <SmartInput id="af-policy-start-date" label="Policy Start Date" value={formData.policyStartDate} onChange={v => setFormData(prev => ({ ...prev, policyStartDate: v }))} type="date" />
                         <SmartInput id="af-policy-end-date" label="Policy End Date" value={formData.policyEndDate} onChange={v => setFormData(prev => ({ ...prev, policyEndDate: v }))} type="date" />
                         <SmartInput id="af-renewal-date" label="Renewal Date" value={formData.renewalDate} onChange={v => setFormData(prev => ({ ...prev, renewalDate: v }))} type="date" className="bg-orange-50 border-orange-100" />
@@ -585,7 +587,7 @@ const DataEntryLedger: React.FC = () => {
                     <div className="flex justify-between items-center pt-4">
                       <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
                       <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                        Confirm & Next: RC Back <span className="material-icons-outlined ml-2">arrow_forward</span>
+                        Confirm & Next: Vehicle RC <span className="material-icons-outlined ml-2">arrow_forward</span>
                       </button>
                     </div>
                   </div>
@@ -593,52 +595,36 @@ const DataEntryLedger: React.FC = () => {
 
                 {currentStep === 3 && (
                   <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Vehicle RC Back"
-                      subtext="Supplementary document upload (No extraction)."
-                      file={formData.documents?.rcBack}
-                      onUpload={e => handleFileUpload(e, 'rcBack')}
-                      onPreview={() => setZoomedImage(formData.documents?.rcBack || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcBack: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.rcBack; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
-                    <div className="flex justify-between items-center pt-4">
-                      <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
-                      <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                        Confirm & Next: RC Front <span className="material-icons-outlined ml-2">arrow_forward</span>
-                      </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <WizardUpload
+                        label="RC Back"
+                        subtext="Back side."
+                        file={formData.documents?.rcBack}
+                        onUpload={e => handleFileUpload(e, 'rcBack')}
+                        onPreview={() => setZoomedImage(formData.documents?.rcBack || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcBack: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.rcBack; return n; });
+                        }}
+                      />
+                      <WizardUpload
+                        label="RC Front"
+                        subtext="Front side."
+                        file={formData.documents?.rcFront}
+                        onUpload={e => handleFileUpload(e, 'rc')}
+                        onPreview={() => setZoomedImage(formData.documents?.rcFront || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcFront: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.rcFront; return n; });
+                        }}
+                      />
                     </div>
-                  </div>
-                )}
-
-                {currentStep === 4 && (
-                  <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Vehicle RC Front"
-                      subtext="Extracted to verify vehicle class (LMV, MC, etc.)."
-                      file={formData.documents?.rcFront}
-                      onUpload={e => handleFileUpload(e, 'rc')}
-                      onPreview={() => setZoomedImage(formData.documents?.rcFront || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcFront: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.rcFront; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
                     <section className="p-8 bg-blue-50 dark:bg-blue-900/20 rounded-[2.5rem] border border-blue-100 dark:border-blue-800 space-y-6">
                       <h4 className="text-[10px] font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">RC Data Audit</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <SmartInput id="af-vehicle-class" label="Vehicle Class" value={formData.vehicleClass} onChange={v => setFormData(prev => ({ ...prev, vehicleClass: v }))} />
-                        <SmartInput id="af-vehicle-type" label="Vehicle Type" value={formData.vehicleType} onChange={v => setFormData(prev => ({ ...prev, vehicleType: v }))} />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <SmartInput id="af-vehicle-reg-no" label="Vehicle Reg No" value={formData.vehicleRegNo} onChange={v => setFormData(prev => ({ ...prev, vehicleRegNo: v }))} />
                         <SmartInput id="af-chassis-no" label="Chassis No" value={formData.chassisNo} onChange={v => setFormData(prev => ({ ...prev, chassisNo: v }))} />
                         <SmartInput id="af-engine-no" label="Engine No" value={formData.engineNo} onChange={v => setFormData(prev => ({ ...prev, engineNo: v }))} />
@@ -653,7 +639,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 5 && (
+                {currentStep === 4 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Owner's PAN Card"
@@ -678,7 +664,7 @@ const DataEntryLedger: React.FC = () => {
                       <div className="flex justify-between items-center pt-4">
                         <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
                         <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                          Confirm & Next: Aadhaar Front <span className="material-icons-outlined ml-2">arrow_forward</span>
+                          Confirm & Next: Aadhaar Card <span className="material-icons-outlined ml-2">arrow_forward</span>
                         </button>
                       </div>
                     </section>
@@ -687,20 +673,33 @@ const DataEntryLedger: React.FC = () => {
 
                 {currentStep === 5 && (
                   <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Owner's Aadhaar Front"
-                      subtext="Last 4 digits used for system Lead ID generation."
-                      file={formData.documents?.aadhaarCard}
-                      onUpload={e => handleFileUpload(e, 'aadhaar')}
-                      onPreview={() => setZoomedImage(formData.documents?.aadhaarCard || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, aadhaarCard: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.aadhaarCard; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <WizardUpload
+                        label="Aadhaar Front"
+                        subtext="Front side with photo."
+                        file={formData.documents?.aadhaarCard}
+                        onUpload={e => handleFileUpload(e, 'aadhaar')}
+                        onPreview={() => setZoomedImage(formData.documents?.aadhaarCard || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, aadhaarCard: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.aadhaarCard; return n; });
+                        }}
+                      />
+                      <WizardUpload
+                        label="Aadhaar Back"
+                        subtext="Back side with address."
+                        file={formData.documents?.aadhaarBack}
+                        onUpload={e => handleFileUpload(e, 'aadhaarBack')}
+                        onPreview={() => setZoomedImage(formData.documents?.aadhaarBack || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, aadhaarBack: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.aadhaarBack; return n; });
+                        }}
+                      />
+                    </div>
+
                     <section className="p-8 bg-blue-50 dark:bg-blue-900/20 rounded-[2.5rem] border border-blue-100 dark:border-blue-800 space-y-6">
                       <h4 className="text-[10px] font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">Aadhaar Audit</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -713,80 +712,42 @@ const DataEntryLedger: React.FC = () => {
                       <div className="flex justify-between items-center pt-4">
                         <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
                         <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                          Confirm & Next: Aadhaar Back <span className="material-icons-outlined ml-2">arrow_forward</span>
+                          Confirm & Next: Voter ID <span className="material-icons-outlined ml-2">arrow_forward</span>
                         </button>
                       </div>
                     </section>
                   </div>
                 )}
 
-                {currentStep === 7 && (
+                {currentStep === 6 && (
                   <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Owner's Aadhaar Back"
-                      subtext="Supporting document for address verification."
-                      file={formData.documents?.aadhaarBack}
-                      onUpload={e => handleFileUpload(e, 'aadhaarBack')}
-                      onPreview={() => setZoomedImage(formData.documents?.aadhaarBack || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, aadhaarBack: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.aadhaarBack; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
-                    <div className="flex justify-between items-center pt-4">
-                      <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
-                      <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                        Next: Voter Front <span className="material-icons-outlined ml-2">arrow_forward</span>
-                      </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <WizardUpload
+                        label="Voter Front"
+                        subtext="Optional ID."
+                        file={formData.documents?.voterFront}
+                        onUpload={e => handleFileUpload(e, 'voterFront')}
+                        onPreview={() => setZoomedImage(formData.documents?.voterFront || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, voterFront: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.voterFront; return n; });
+                        }}
+                      />
+                      <WizardUpload
+                        label="Voter Back"
+                        subtext="Optional Address."
+                        file={formData.documents?.voterBack}
+                        onUpload={e => handleFileUpload(e, 'voterBack')}
+                        onPreview={() => setZoomedImage(formData.documents?.voterBack || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, voterBack: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.voterBack; return n; });
+                        }}
+                      />
                     </div>
-                  </div>
-                )}
-
-                {currentStep === 8 && (
-                  <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Owner's Voter Front"
-                      subtext="Optional secondary ID verification."
-                      file={formData.documents?.voterFront}
-                      onUpload={e => handleFileUpload(e, 'voterFront')}
-                      onPreview={() => setZoomedImage(formData.documents?.voterFront || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, voterFront: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.voterFront; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
-                    <div className="flex justify-between items-center pt-4">
-                      <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
-                      <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                        Next: Voter Back <span className="material-icons-outlined ml-2">arrow_forward</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 9 && (
-                  <div className="space-y-10 animate-fadeIn">
-                    <WizardUpload
-                      label="Upload Owner's Voter Back"
-                      subtext="Optional secondary address verification."
-                      file={formData.documents?.voterBack}
-                      onUpload={e => handleFileUpload(e, 'voterBack')}
-                      onPreview={() => setZoomedImage(formData.documents?.voterBack || null)}
-                      processing={isProcessing}
-                      onReset={() => {
-                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, voterBack: undefined } }));
-                        setFileObjects(prev => { const n = { ...prev }; delete n.voterBack; return n; });
-                      }}
-                      onSkip={nextStep}
-                      onBack={prevStep}
-                    />
-                    {formData.documents?.voterBack && (
+                    {(formData.documents?.voterFront || formData.documents?.voterBack) && (
                       <div className="flex justify-between items-center pt-4">
                         <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
                         <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
@@ -794,10 +755,19 @@ const DataEntryLedger: React.FC = () => {
                         </button>
                       </div>
                     )}
+                    {/* Allow skip if no documents */}
+                    {!formData.documents?.voterFront && !formData.documents?.voterBack && (
+                      <div className="flex justify-between items-center pt-4">
+                        <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
+                        <button onClick={nextStep} className="bg-gray-100/50 text-gray-500 px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all flex items-center">
+                          Skip Voter ID <span className="material-icons-outlined ml-2">fast_forward</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {currentStep === 10 && (
+                {currentStep === 7 && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-fadeIn">
                     <div className="space-y-8">
                       <section className="space-y-6">
@@ -1036,7 +1006,7 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
 
   return (
     <div className={`relative group p-10 rounded-[3rem] border-2 border-dashed flex flex-col items-center justify-center transition-all min-h-[300px] text-center ${file ? 'border-green-500 bg-green-50/20' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900'}`}>
-      {!file && (
+      {!file && (onBack || onSkip) && (
         <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-30">
           <div>
             {onBack && (
@@ -1048,12 +1018,14 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
               </button>
             )}
           </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); onSkip(); }}
-            className="px-4 py-2 bg-white dark:bg-gray-800 text-gray-400 hover:text-[#2E7D32] rounded-xl text-[10px] font-black uppercase tracking-widest border border-gray-100 dark:border-gray-700 shadow-sm transition-all flex items-center"
-          >
-            Skip This Step <span className="material-icons-outlined ml-1 text-sm">fast_forward</span>
-          </button>
+          {onSkip && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onSkip(); }}
+              className="px-4 py-2 bg-white dark:bg-gray-800 text-gray-400 hover:text-[#2E7D32] rounded-xl text-[10px] font-black uppercase tracking-widest border border-gray-100 dark:border-gray-700 shadow-sm transition-all flex items-center"
+            >
+              Skip This Step <span className="material-icons-outlined ml-1 text-sm">fast_forward</span>
+            </button>
+          )}
         </div>
       )}
 

@@ -5,7 +5,7 @@ import { AdminPayoutRecord } from '@/types';
 import { WEB_AGGREGATORS } from '@/constants';
 
 const AdminPayoutRecords: React.FC = () => {
-  const { adminPayoutRecords, saveAdminPayoutRecord, deleteAdminPayoutRecord } = useGlobalState();
+  const { adminPayoutRecords, saveAdminPayoutRecord, deleteAdminPayoutRecord, autoFetchRecords } = useGlobalState();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPolicyType, setFilterPolicyType] = useState('all');
   const [filterAggregator, setFilterAggregator] = useState('all');
@@ -18,6 +18,10 @@ const AdminPayoutRecords: React.FC = () => {
 
   const filteredRecords = useMemo(() => {
     return adminPayoutRecords.filter(r => {
+      // Filter out if master record is missing (deleted) or 'missed' status
+      const masterRecord = autoFetchRecords.find(ar => ar.id === r.id);
+      if (!masterRecord || masterRecord.status === 'missed') return false;
+
       const q = searchQuery.toLowerCase();
       const matchesSearch = (r.id?.toLowerCase().includes(q) || r.vehicleNumber?.toLowerCase().includes(q) || r.customerName?.toLowerCase().includes(q));
       const matchesPolicy = filterPolicyType === 'all' || r.policyType?.toUpperCase() === filterPolicyType.toUpperCase();
@@ -38,15 +42,21 @@ const AdminPayoutRecords: React.FC = () => {
       }
       return matchesSearch && matchesPolicy && matchesAggregator && matchesStatus && matchesDate;
     }).sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
-  }, [adminPayoutRecords, searchQuery, filterPolicyType, filterAggregator, filterStatus, startDate, endDate]);
+  }, [adminPayoutRecords, autoFetchRecords, searchQuery, filterPolicyType, filterAggregator, filterStatus, startDate, endDate]);
 
   const summary = useMemo(() => {
-    return filteredRecords.reduce((acc, r) => ({
-      totalIncome: acc.totalIncome + (r.netProfit + r.discount + r.brokerPayment),
-      totalDiscounts: acc.totalDiscounts + r.discount,
-      totalBrokerage: acc.totalBrokerage + r.brokerPayment,
-      netProfit: acc.netProfit + r.netProfit
-    }), { totalIncome: 0, totalDiscounts: 0, totalBrokerage: 0, netProfit: 0 });
+    return filteredRecords.reduce((acc, r) => {
+      const netProfit = Number(r.netProfit) || 0;
+      const discount = Number(r.discount) || 0;
+      const brokerPayment = Number(r.brokerPayment) || 0;
+
+      return {
+        totalIncome: acc.totalIncome + (netProfit + discount + brokerPayment),
+        totalDiscounts: acc.totalDiscounts + discount,
+        totalBrokerage: acc.totalBrokerage + brokerPayment,
+        netProfit: acc.netProfit + netProfit
+      };
+    }, { totalIncome: 0, totalDiscounts: 0, totalBrokerage: 0, netProfit: 0 });
   }, [filteredRecords]);
 
   const handlePrint = () => {
@@ -103,8 +113,8 @@ const AdminPayoutRecords: React.FC = () => {
                   <td>${r.customerName}</td>
                   <td>${r.vehicleNumber}</td>
                   <td>${r.insuranceCompany}</td>
-                  <td>₹${r.premiumAmount.toLocaleString()}</td>
-                  <td>₹${r.netProfit.toLocaleString()}</td>
+                  <td>₹${(Number(r.premiumAmount) || 0).toLocaleString()}</td>
+                  <td>₹${(Number(r.netProfit) || 0).toLocaleString()}</td>
                   <td class="${r.paymentReceived === 'Yes' ? 'received' : 'pending'}">${r.paymentReceived === 'Yes' ? 'Received' : 'Pending'}</td>
                 </tr>
               `).join('')}
@@ -136,16 +146,16 @@ const AdminPayoutRecords: React.FC = () => {
       `"${r.insuranceCompany}"`,
       `"${r.aggregatorName}"`,
       `"${r.policyType}"`,
-      r.premiumAmount.toFixed(2),
+      (Number(r.premiumAmount) || 0).toFixed(2),
       `${r.commissionRate}%`,
       `"${r.commissionOn}"`,
       (r.odPremium || 0).toFixed(2),
       (r.tpPremium || 0).toFixed(2),
       `${r.odPercentage || 0}%`,
       `${r.tpPercentage || 0}%`,
-      r.discount.toFixed(2),
-      r.brokerPayment.toFixed(2),
-      r.netProfit.toFixed(2),
+      (Number(r.discount) || 0).toFixed(2),
+      (Number(r.brokerPayment) || 0).toFixed(2),
+      (Number(r.netProfit) || 0).toFixed(2),
       `"${r.paymentReceived === 'Yes' ? 'RECEIVED' : 'PENDING'}"`,
       `"${r.remarks}"`
     ]);
@@ -190,8 +200,9 @@ const AdminPayoutRecords: React.FC = () => {
         commissionAmount = baseAmount * ((editingRecord.commissionRate || 0) / 100);
       }
 
-      // 2. TDS Calculation (Fixed 2%)
-      calculatedTds = commissionAmount * 0.02;
+      // 2. TDS Calculation based on Rate
+      const tdsRate = editingRecord.tdsRate !== undefined ? editingRecord.tdsRate : 2; // Default 2%
+      calculatedTds = commissionAmount * (tdsRate / 100);
 
       // 3. Commission Without TDS
       commissionWithoutTds = commissionAmount - calculatedTds;
@@ -206,6 +217,7 @@ const AdminPayoutRecords: React.FC = () => {
       if (
         editingRecord.earning !== commissionAmount ||
         editingRecord.tds !== calculatedTds ||
+        editingRecord.tdsRate !== (editingRecord.tdsRate !== undefined ? editingRecord.tdsRate : 2) ||
         editingRecord.amountAfterTds !== commissionWithoutTds ||
         Math.abs(editingRecord.netProfit - profit) > 0.01
       ) {
@@ -213,6 +225,7 @@ const AdminPayoutRecords: React.FC = () => {
           ...editingRecord,
           earning: commissionAmount,
           tds: calculatedTds,
+          tdsRate: editingRecord.tdsRate !== undefined ? editingRecord.tdsRate : 2,
           amountAfterTds: commissionWithoutTds,
           netProfit: profit
         });
@@ -231,7 +244,8 @@ const AdminPayoutRecords: React.FC = () => {
     editingRecord?.discount,
     editingRecord?.brokerPayment,
     editingRecord?.otherExpense,
-    editingRecord?.earning
+    editingRecord?.earning,
+    editingRecord?.tdsRate
   ]);
 
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -354,15 +368,26 @@ const AdminPayoutRecords: React.FC = () => {
                 <p className="text-sm font-black dark:text-white">₹{(editingRecord.earning || 0).toLocaleString()}</p>
               </div>
 
-              {/* 6. TDS (Calculated) */}
+              {/* 6. TDS Rate (%) */}
+              <SmartEditInput
+                label="6. TDS Rate (%)"
+                id="edit-payout-tds-rate"
+                name="tdsRate"
+                value={editingRecord.tdsRate !== undefined ? editingRecord.tdsRate : 2}
+                onChange={v => setEditingRecord({ ...editingRecord, tdsRate: Number(v) })}
+                type="number"
+                className="bg-yellow-50/20 border-yellow-100"
+              />
+
+              {/* 7. TDS Deducted (Calculated) */}
               <div className="p-4 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/30">
-                <label className="text-[8px] font-black uppercase text-red-400 block mb-1">6. TDS Deducted (2%)</label>
+                <label className="text-[8px] font-black uppercase text-red-400 block mb-1">7. TDS Deducted (Calculated)</label>
                 <p className="text-sm font-black text-red-600">₹{(editingRecord.tds || 0).toLocaleString()}</p>
               </div>
 
-              {/* 7. Comm without TDS */}
+              {/* 8. Comm. Without TDS */}
               <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
-                <label className="text-[8px] font-black uppercase text-blue-400 block mb-1">7. Comm. Without TDS</label>
+                <label className="text-[8px] font-black uppercase text-blue-400 block mb-1">8. Comm. Without TDS</label>
                 <p className="text-sm font-black text-blue-600">₹{(editingRecord.amountAfterTds || 0).toLocaleString()}</p>
               </div>
 
@@ -482,10 +507,10 @@ const AdminPayoutRecords: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatBox label="Gross Income" value={`₹${summary.totalIncome.toLocaleString()}`} color="text-blue-600" bg="bg-blue-50" icon="account_balance" />
-        <StatBox label="Client Discounts" value={`₹${summary.totalDiscounts.toLocaleString()}`} color="text-red-600" bg="bg-red-50" icon="loyalty" />
-        <StatBox label="Brokerage Expense" value={`₹${summary.totalBrokerage.toLocaleString()}`} color="text-orange-600" bg="bg-orange-50" icon="payments" />
-        <StatBox label="Company Net Profit" value={`₹${summary.netProfit.toLocaleString()}`} color="text-green-600" bg="bg-green-50" icon="auto_graph" />
+        <StatBox label="Gross Income" value={`₹${(Number(summary.totalIncome) || 0).toLocaleString()}`} color="text-blue-600" bg="bg-blue-50" icon="account_balance" />
+        <StatBox label="Client Discounts" value={`₹${(Number(summary.totalDiscounts) || 0).toLocaleString()}`} color="text-red-600" bg="bg-red-50" icon="loyalty" />
+        <StatBox label="Brokerage Expense" value={`₹${(Number(summary.totalBrokerage) || 0).toLocaleString()}`} color="text-orange-600" bg="bg-orange-50" icon="payments" />
+        <StatBox label="Company Net Profit" value={`₹${(Number(summary.netProfit) || 0).toLocaleString()}`} color="text-green-600" bg="bg-green-50" icon="auto_graph" />
       </div>
 
       <div className="bg-white dark:bg-gray-800 p-8 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 lg:grid-cols-6 gap-4">

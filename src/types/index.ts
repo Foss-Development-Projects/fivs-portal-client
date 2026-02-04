@@ -188,6 +188,7 @@ export interface AdminPayoutRecord {
   // Calculation derivation
   earning?: number;
   tds?: number;
+  tdsRate?: number; // New: Percentage for TDS
   amountAfterTds?: number;
 
   discount: number;

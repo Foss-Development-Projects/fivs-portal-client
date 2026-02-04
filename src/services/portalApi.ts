@@ -14,7 +14,10 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
     const token = localStorage.getItem('fivs_auth_token');
     const headers: any = {};
-    const isFormData = body instanceof FormData || (body && body.constructor && body.constructor.name === 'FormData');
+    const isFormData = body instanceof FormData || (body && typeof body.append === 'function');
+
+    console.log(`[API] ${method} ${path}`, { isFormData, bodyType: typeof body });
+
     if (!isFormData) {
       headers['Content-Type'] = 'application/json';
     }
