@@ -14,7 +14,8 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
     const token = localStorage.getItem('fivs_auth_token');
     const headers: any = {};
-    if (!(body instanceof FormData)) {
+    const isFormData = body instanceof FormData || (body && body.constructor && body.constructor.name === 'FormData');
+    if (!isFormData) {
       headers['Content-Type'] = 'application/json';
     }
     if (token) {
@@ -26,7 +27,7 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
     const response = await fetch(`/api/${path}`, {
       method,
       headers,
-      body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined)
+      body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
     });
 
     if (response.status === 401 || response.status === 403) {

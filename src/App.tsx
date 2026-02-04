@@ -22,6 +22,7 @@ import AdminPayoutRecords from './pages/Admin/PayoutRecords';
 import AdminNotifications from './pages/Admin/Notifications';
 import AdminTickets from './pages/Admin/Tickets';
 import AdminAutoFetch from './pages/Admin/AutoFetchRecords';
+import { initFormPersistence } from './utils/formPersistence';
 
 import './assets/css/app.css';
 
@@ -72,6 +73,12 @@ const App: React.FC = () => {
       localStorage.removeItem('fivs_session_user');
     }
   }, [currentUser]);
+
+  // Form persistence initialization
+  useEffect(() => {
+    const cleanup = initFormPersistence();
+    return cleanup;
+  }, [location.pathname]); // Re-initialize or re-scan on route changes
 
   // Sync Logic
   const isSyncingRef = useRef(false);
