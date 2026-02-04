@@ -60,7 +60,7 @@ const DataEntryLedger: React.FC = () => {
     return `${cleanName}${last4}`;
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'policy' | 'rc' | 'rcBack' | 'pan' | 'aadhaar' | 'aadhaarBack' | 'voterFront' | 'voterBack') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'policy' | 'endorsement' | 'rc' | 'rcBack' | 'pan' | 'aadhaar' | 'aadhaarBack' | 'voterFront' | 'voterBack') => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsProcessing(true); // Temporarily show loading for read
@@ -68,9 +68,10 @@ const DataEntryLedger: React.FC = () => {
 
     const docKey = type === 'aadhaar' ? 'aadhaarCard' :
       type === 'policy' ? 'policyCopy' :
-        type === 'rc' ? 'rcFront' :
-          type === 'rcBack' ? 'rcBack' :
-            type === 'pan' ? 'panCard' : type;
+        type === 'endorsement' ? 'endorsementCopy' :
+          type === 'rc' ? 'rcFront' :
+            type === 'rcBack' ? 'rcBack' :
+              type === 'pan' ? 'panCard' : type;
 
     // Store raw file for upload
     setFileObjects(prev => ({ ...prev, [docKey]: file }));
@@ -264,8 +265,8 @@ const DataEntryLedger: React.FC = () => {
     setShowCsvDialog(false);
   };
 
-  const stepLabels = ["Insurance Policy", "RC Back", "RC Front", "PAN Card", "Aadhaar Front", "Aadhaar Back", "Voter Front", "Voter Back", "Manual Details"];
-  const totalSteps = 9;
+  const stepLabels = ["Insurance Policy", "Endorsement Copy", "RC Back", "RC Front", "PAN Card", "Aadhaar Front", "Aadhaar Back", "Voter Front", "Voter Back", "Manual Details"];
+  const totalSteps = 10;
   const nextStep = () => { setCurrentStep(prev => Math.min(prev + 1, totalSteps)); setErrorMessage(null); };
   const prevStep = () => { setCurrentStep(prev => Math.max(prev - 1, 1)); setErrorMessage(null); };
 
@@ -550,10 +551,7 @@ const DataEntryLedger: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <SmartInput id="af-owner-name" label="Owner's Name" value={formData.ownerName} onChange={v => setFormData(prev => ({ ...prev, ownerName: v }))} />
-                        <SmartInput id="af-vehicle-reg-no" label="Vehicle Reg No" value={formData.vehicleRegNo} onChange={v => setFormData(prev => ({ ...prev, vehicleRegNo: v }))} />
                         <SmartInput id="af-policy-no" label="Policy No" value={formData.policyNo} onChange={v => setFormData(prev => ({ ...prev, policyNo: v }))} />
-                        <SmartInput id="af-engine-no" label="Engine No" value={formData.engineNo} onChange={v => setFormData(prev => ({ ...prev, engineNo: v }))} />
-                        <SmartInput id="af-chassis-no" label="Chassis No" value={formData.chassisNo} onChange={v => setFormData(prev => ({ ...prev, chassisNo: v }))} />
                         <SmartInput id="af-policy-start-date" label="Policy Start Date" value={formData.policyStartDate} onChange={v => setFormData(prev => ({ ...prev, policyStartDate: v }))} type="date" />
                         <SmartInput id="af-policy-end-date" label="Policy End Date" value={formData.policyEndDate} onChange={v => setFormData(prev => ({ ...prev, policyEndDate: v }))} type="date" />
                         <SmartInput id="af-renewal-date" label="Renewal Date" value={formData.renewalDate} onChange={v => setFormData(prev => ({ ...prev, renewalDate: v }))} type="date" className="bg-orange-50 border-orange-100" />
@@ -561,7 +559,7 @@ const DataEntryLedger: React.FC = () => {
                       <SmartInput id="af-owner-address" label="Owner Address" value={formData.ownerAddress} onChange={v => setFormData(prev => ({ ...prev, ownerAddress: v }))} />
                       <div className="flex justify-end pt-4">
                         <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
-                          Confirm & Next: RC Back <span className="material-icons-outlined ml-2">arrow_forward</span>
+                          Confirm & Next: Endorsement Copy <span className="material-icons-outlined ml-2">arrow_forward</span>
                         </button>
                       </div>
                     </section>
@@ -569,6 +567,31 @@ const DataEntryLedger: React.FC = () => {
                 )}
 
                 {currentStep === 2 && (
+                  <div className="space-y-10 animate-fadeIn">
+                    <WizardUpload
+                      label="Upload Policy Endorsement Copy"
+                      subtext="Optional. Upload if there are endorsement details."
+                      file={formData.documents?.endorsementCopy}
+                      onUpload={e => handleFileUpload(e, 'endorsement')}
+                      onPreview={() => setZoomedImage(formData.documents?.endorsementCopy || null)}
+                      processing={isProcessing}
+                      onReset={() => {
+                        setFormData(prev => ({ ...prev, documents: { ...prev.documents, endorsementCopy: undefined } }));
+                        setFileObjects(prev => { const n = { ...prev }; delete n.endorsementCopy; return n; });
+                      }}
+                      onSkip={nextStep}
+                      onBack={prevStep}
+                    />
+                    <div className="flex justify-between items-center pt-4">
+                      <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
+                      <button onClick={nextStep} className="bg-[#2E7D32] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center">
+                        Confirm & Next: RC Back <span className="material-icons-outlined ml-2">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {currentStep === 3 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Vehicle RC Back"
@@ -593,7 +616,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 3 && (
+                {currentStep === 4 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Vehicle RC Front"
@@ -610,9 +633,15 @@ const DataEntryLedger: React.FC = () => {
                       onBack={prevStep}
                     />
                     <section className="p-8 bg-blue-50 dark:bg-blue-900/20 rounded-[2.5rem] border border-blue-100 dark:border-blue-800 space-y-6">
-                      <h4 className="text-[10px] font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">Vehicle Class Info</h4>
+                      <h4 className="text-[10px] font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">RC Data Audit</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <SmartInput id="af-vehicle-class" label="Vehicle Class" value={formData.vehicleClass} onChange={v => setFormData(prev => ({ ...prev, vehicleClass: v }))} />
+                        <SmartInput id="af-vehicle-type" label="Vehicle Type" value={formData.vehicleType} onChange={v => setFormData(prev => ({ ...prev, vehicleType: v }))} />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <SmartInput id="af-vehicle-reg-no" label="Vehicle Reg No" value={formData.vehicleRegNo} onChange={v => setFormData(prev => ({ ...prev, vehicleRegNo: v }))} />
+                        <SmartInput id="af-chassis-no" label="Chassis No" value={formData.chassisNo} onChange={v => setFormData(prev => ({ ...prev, chassisNo: v }))} />
+                        <SmartInput id="af-engine-no" label="Engine No" value={formData.engineNo} onChange={v => setFormData(prev => ({ ...prev, engineNo: v }))} />
                       </div>
                       <div className="flex justify-between items-center pt-4">
                         <button onClick={prevStep} className="text-gray-400 font-black uppercase text-[10px] tracking-widest">Back</button>
@@ -624,7 +653,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 4 && (
+                {currentStep === 5 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Owner's PAN Card"
@@ -691,7 +720,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 6 && (
+                {currentStep === 7 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Owner's Aadhaar Back"
@@ -716,7 +745,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 7 && (
+                {currentStep === 8 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Owner's Voter Front"
@@ -741,7 +770,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 8 && (
+                {currentStep === 9 && (
                   <div className="space-y-10 animate-fadeIn">
                     <WizardUpload
                       label="Upload Owner's Voter Back"
@@ -768,7 +797,7 @@ const DataEntryLedger: React.FC = () => {
                   </div>
                 )}
 
-                {currentStep === 9 && (
+                {currentStep === 10 && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-fadeIn">
                     <div className="space-y-8">
                       <section className="space-y-6">

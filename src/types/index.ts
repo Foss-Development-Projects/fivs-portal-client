@@ -146,6 +146,7 @@ export interface AutoFetchRecord {
   // Documents
   documents: {
     policyCopy?: string;
+    endorsementCopy?: string; // New
     rcFront?: string; // Renamed
     rcBack?: string; // New
     panCard?: string;
