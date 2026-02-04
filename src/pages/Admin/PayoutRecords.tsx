@@ -14,6 +14,7 @@ const AdminPayoutRecords: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [showCsvDialog, setShowCsvDialog] = useState(false);
   const [editingRecord, setEditingRecord] = useState<AdminPayoutRecord | null>(null);
+  const [selectedViewRecord, setSelectedViewRecord] = useState<AdminPayoutRecord | null>(null);
 
   const filteredRecords = useMemo(() => {
     return adminPayoutRecords.filter(r => {
@@ -402,6 +403,74 @@ const AdminPayoutRecords: React.FC = () => {
         </div>
       )}
 
+      {selectedViewRecord && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[160] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-[3rem] shadow-2xl animate-scaleIn border border-gray-100 dark:border-gray-700 custom-scrollbar">
+            <div className="p-8 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center sticky top-0 z-10">
+              <div>
+                <h3 className="text-xl font-black dark:text-white uppercase tracking-widest text-sm">Payout Record Details</h3>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Ref: {selectedViewRecord.id}</p>
+              </div>
+              <button onClick={() => setSelectedViewRecord(null)} className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center shadow-sm hover:bg-gray-100 transition-colors"><span className="material-icons-outlined">close</span></button>
+            </div>
+
+            <div className="p-10 space-y-8">
+              {/* 1. Primary Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-black text-[#2E7D32] uppercase tracking-widest border-b pb-2 mb-4">Customer & Vehicle</h4>
+                  <DetailRow label="Customer Name" value={selectedViewRecord.customerName} />
+                  <DetailRow label="Vehicle Number" value={selectedViewRecord.vehicleNumber} />
+                  <DetailRow label="Aggregator" value={selectedViewRecord.aggregatorName} />
+                  <DetailRow label="Policy Type" value={selectedViewRecord.policyType} />
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-black text-[#2E7D32] uppercase tracking-widest border-b pb-2 mb-4">Financial Overview</h4>
+                  <DetailRow label="Total Premium" value={`₹${(selectedViewRecord.premiumAmount || 0).toLocaleString()}`} />
+                  <DetailRow label="Net Profit" value={`₹${(selectedViewRecord.netProfit || 0).toLocaleString()}`} highlightClass="text-green-600 font-black text-lg" />
+                  <DetailRow label="Payment Status" value={selectedViewRecord.paymentReceived === 'Yes' ? 'RECEIVED' : 'PENDING'} highlightClass={selectedViewRecord.paymentReceived === 'Yes' ? 'text-green-600' : 'text-yellow-600'} />
+                  <DetailRow label="Last Updated" value={new Date(selectedViewRecord.lastUpdated).toLocaleString()} />
+                </div>
+              </div>
+
+              {/* 2. Commission Breakdown */}
+              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-6 border border-gray-100 dark:border-gray-700">
+                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Commission Structure ({selectedViewRecord.commissionOn})</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <DetailRow label="OD Premium" value={`₹${(selectedViewRecord.odPremium || 0).toLocaleString()}`} />
+                  <DetailRow label="TP Premium" value={`₹${(selectedViewRecord.tpPremium || 0).toLocaleString()}`} />
+                  <DetailRow label="OD %" value={`${selectedViewRecord.odPercentage || 0}%`} />
+                  <DetailRow label="TP %" value={`${selectedViewRecord.tpPercentage || 0}%`} />
+                  <DetailRow label="Net Premium" value={`₹${(selectedViewRecord.netPremium || 0).toLocaleString()}`} />
+                  <DetailRow label="Comm. Rate" value={`${selectedViewRecord.commissionRate || 0}%`} />
+                  <DetailRow label="Points" value={selectedViewRecord.points?.toString()} />
+                  <DetailRow label="Gross Commission" value={`₹${(selectedViewRecord.earning || 0).toLocaleString()}`} />
+                </div>
+              </div>
+
+              {/* 3. Deductions & Final */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-6 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-100">
+                  <DetailRow label="TDS (2%)" value={`₹${(selectedViewRecord.tds || 0).toLocaleString()}`} highlightClass="text-red-500 font-bold" />
+                </div>
+                <div className="p-6 bg-orange-50 dark:bg-orange-900/10 rounded-3xl border border-orange-100">
+                  <DetailRow label="Discount Given" value={`₹${(selectedViewRecord.discount || 0).toLocaleString()}`} highlightClass="text-orange-500 font-bold" />
+                </div>
+                <div className="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-3xl border border-purple-100">
+                  <DetailRow label="Brokerage Paid" value={`₹${(selectedViewRecord.brokerPayment || 0).toLocaleString()}`} highlightClass="text-purple-500 font-bold" />
+                </div>
+              </div>
+
+              {selectedViewRecord.remarks && (
+                <div className="p-6 bg-yellow-50 dark:bg-yellow-900/10 rounded-3xl border border-yellow-100">
+                  <DetailRow label="Remarks" value={selectedViewRecord.remarks} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-black text-gray-800 dark:text-white tracking-tight">Payout Ledger</h2>
@@ -507,7 +576,10 @@ const AdminPayoutRecords: React.FC = () => {
                   </span>
                 </td>
                 <td className="px-8 py-6 text-right">
-                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex justify-end gap-2 transition-opacity">
+                    <button onClick={() => setSelectedViewRecord(rec)} className="p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl text-blue-500 hover:text-blue-600 transition-all shadow-sm" title="View Details">
+                      <span className="material-icons-outlined text-lg">visibility</span>
+                    </button>
                     <button onClick={() => setEditingRecord(rec)} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-gray-400 hover:text-[#2E7D32] transition-all shadow-sm">
                       <span className="material-icons-outlined text-lg">edit</span>
                     </button>
@@ -545,7 +617,14 @@ const StatBox = ({ label, value, color, bg, icon }: any) => (
 const SmartEditInput = ({ label, value, onChange, type = "text", className = "", id, name }: any) => (
   <div className={`p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-50 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] ${className}`}>
     <label className="block text-[8px] font-black uppercase text-gray-400 mb-1" htmlFor={id}>{label}</label>
-    <input id={id} name={name || id} type={type} className="w-full bg-transparent outline-none font-bold text-sm dark:text-white" value={value ?? ''} onChange={e => onChange(e.target.value)} />
+    <input id={id} name={name || id} type={type} className="w-full bg-transparent outline-none font-bold text-sm dark:text-white" value={value === 0 ? '' : (value ?? '')} onChange={e => onChange(e.target.value)} />
+  </div>
+);
+
+const DetailRow = ({ label, value, highlightClass = "text-gray-800 dark:text-gray-200" }: { label: string, value?: string, highlightClass?: string }) => (
+  <div className="flex flex-col">
+    <span className="text-[8px] font-black text-gray-400 uppercase tracking-wider mb-1">{label}</span>
+    <span className={`text-sm font-bold break-words ${highlightClass}`}>{value || '-'}</span>
   </div>
 );
 
