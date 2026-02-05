@@ -190,7 +190,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                 <p className="px-4 py-2 text-[10px] font-black uppercase text-gray-400">Admin Console</p>
                 {[
                   { id: 'dashboard', icon: 'analytics', label: 'Overview' },
-                  { id: 'autofetch', icon: 'keyboard', label: 'Data Entry' },
+                  { id: 'data-entry', icon: 'keyboard', label: 'Data Entry' },
                   { id: 'payout-records', icon: 'receipt_long', label: 'Payout Logs' },
                 ].map((item) => (
                   <SidebarItem

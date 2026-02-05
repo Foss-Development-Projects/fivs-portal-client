@@ -249,7 +249,7 @@ const App: React.FC = () => {
                   <Route path="/partners" element={<AdminPartners />} />
                   <Route path="/kyc-approval" element={<AdminKYC />} />
                   <Route path="/all-leads" element={<AdminLeads />} />
-                  <Route path="/autofetch" element={<AdminAutoFetch />} />
+                  <Route path="/data-entry" element={<AdminAutoFetch />} />
                   <Route path="/payout-records" element={<AdminPayoutRecords />} />
                   <Route path="/banner-management" element={<AdminBanners />} />
                   <Route path="/payouts" element={<AdminPayouts />} />
