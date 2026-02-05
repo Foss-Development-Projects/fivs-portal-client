@@ -444,10 +444,10 @@ const DataEntryLedger: React.FC = () => {
                 <thead className="bg-gray-50 dark:bg-gray-900 text-[10px] uppercase font-black text-gray-400 border-b dark:border-gray-700">
                   <tr>
                     <th className="px-8 py-5">Timestamp / ID</th>
-                    <th className="px-8 py-5">Owner Details</th>
-                    <th className="px-8 py-5">Vehicle & Policy</th>
-                    <th className="px-8 py-5">Insurers</th>
-                    <th className="px-8 py-5">Renewal Timeline</th>
+                    <th className="px-8 py-5 min-w-[200px]">Owner Details</th>
+                    <th className="px-8 py-5 min-w-[200px]">Vehicle & Policy</th>
+                    <th className="px-8 py-5 min-w-[250px]">Insurers</th>
+                    <th className="px-8 py-5 min-w-[180px]">Renewal Timeline</th>
                     <th className="px-8 py-5">Lifecycle</th>
                     <th className="px-8 py-5 text-right">Actions</th>
                   </tr>
@@ -456,8 +456,8 @@ const DataEntryLedger: React.FC = () => {
                   {filteredRecords.map(rec => (
                     <tr key={rec.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors group">
                       <td className="px-8 py-6">
-                        <p className="text-[10px] font-mono text-gray-400 mb-1">{rec.timestamp}</p>
-                        <p className="font-black text-[#2E7D32] uppercase">{rec.id}</p>
+                        <p className="font-black text-[#2E7D32] uppercase mb-1">{rec.id}</p>
+                        <p className="text-[10px] font-mono text-gray-400">{rec.timestamp}</p>
                       </td>
                       <td className="px-8 py-6">
                         <p className="font-bold dark:text-white">{rec.ownerName || 'N/A'}</p>
@@ -472,14 +472,17 @@ const DataEntryLedger: React.FC = () => {
                         <p className="text-[10px] text-blue-500 font-black uppercase">{rec.webAggregator}</p>
                       </td>
                       <td className="px-8 py-6">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-black text-orange-600">{rec.renewalDate || 'N/A'}</span>
-                          {(() => {
-                            if (!rec.renewalDate) return null;
-                            const days = Math.ceil((new Date(rec.renewalDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
-                            if (days <= 7 && days > 0 && rec.status !== 'renewed') return <span className="bg-red-500 text-white px-2 py-0.5 rounded text-[8px] animate-pulse">EXPIRING</span>;
-                            return null;
-                          })()}
+                        <div className="flex flex-col">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-black text-orange-600">{rec.renewalDate || 'N/A'}</span>
+                            {(() => {
+                              if (!rec.renewalDate) return null;
+                              const days = Math.ceil((new Date(rec.renewalDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+                              if (days <= 7 && days > 0 && rec.status !== 'renewed') return <span className="bg-red-500 text-white px-2 py-0.5 rounded text-[8px] animate-pulse">EXPIRING</span>;
+                              return null;
+                            })()}
+                          </div>
+                          <span className="text-[9px] font-mono text-gray-400 mt-0.5">{rec.timestamp}</span>
                         </div>
                       </td>
                       <td className="px-8 py-6">
@@ -489,13 +492,13 @@ const DataEntryLedger: React.FC = () => {
                       </td>
                       <td className="px-8 py-6 text-right">
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => setSelectedRecord(rec)} className="p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl text-blue-500 hover:text-blue-600 transition-all" title="View Details">
+                          <button onClick={() => setSelectedRecord(rec)} className="w-10 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/10 rounded-full text-blue-500 hover:text-blue-600 transition-all" title="View Details">
                             <span className="material-icons-outlined">visibility</span>
                           </button>
-                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-gray-400 hover:text-[#2E7D32] transition-all" title="Edit/Audit">
+                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-full text-gray-400 hover:text-[#2E7D32] transition-all" title="Edit/Audit">
                             <span className="material-icons-outlined">edit_note</span>
                           </button>
-                          <button onClick={() => handleDelete(rec.id)} className="p-3 bg-red-50 dark:bg-red-900/10 rounded-xl text-red-400 hover:text-red-600 transition-all" title="Remove Record">
+                          <button onClick={() => handleDelete(rec.id)} className="w-10 h-10 flex items-center justify-center bg-red-50 dark:bg-red-900/10 rounded-full text-red-400 hover:text-red-600 transition-all" title="Remove Record">
                             <span className="material-icons-outlined">delete_outline</span>
                           </button>
                         </div>
