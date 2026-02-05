@@ -22,6 +22,7 @@ import AdminPayoutRecords from './pages/Admin/PayoutRecords';
 import AdminNotifications from './pages/Admin/Notifications';
 import AdminTickets from './pages/Admin/Tickets';
 import AdminAutoFetch from './pages/Admin/AutoFetchRecords';
+import AdminProfile from './pages/Admin/AdminProfile';
 import { initFormPersistence } from './utils/formPersistence';
 
 import './assets/css/app.css';
@@ -125,6 +126,15 @@ const App: React.FC = () => {
       setNotifications(Array.isArray(dbNotifications) ? dbNotifications : []);
       setAutoFetchRecords(Array.isArray(dbAutoFetch) ? dbAutoFetch : []);
       setAdminPayoutRecords(Array.isArray(dbAdminPayoutRecords) ? dbAdminPayoutRecords : []);
+
+      // REFRESH CURRENT USER: Update current user state with latest data from DB
+      if (currentUser && Array.isArray(dbUsers)) {
+        const freshUser = dbUsers.find(u => u.id === currentUser.id);
+        if (freshUser) {
+          setCurrentUser(freshUser);
+        }
+      }
+
       setError(null);
     } catch (err: any) {
       console.debug("Background sync idle:", err.message);
@@ -235,6 +245,7 @@ const App: React.FC = () => {
                   <Route path="/payouts" element={<AdminPayouts />} />
                   <Route path="/admin-notifications" element={<AdminNotifications />} />
                   <Route path="/admin-tickets" element={<AdminTickets />} />
+                  <Route path="/admin-profile" element={<AdminProfile />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </>
               )}

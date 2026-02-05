@@ -200,6 +200,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                     label={item.label}
                   />
                 ))}
+                <SidebarItem to="/admin-profile" icon="manage_accounts" label="My Account" />
               </div>
 
               {/* Partner Console */}
