@@ -51,15 +51,33 @@ const SidebarItem: React.FC<{ to?: string, icon: string, label: string, badgeCou
 
 export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [lastSync, setLastSync] = useState<string>(new Date().toLocaleTimeString());
   const { darkMode, toggleDarkMode, notifications, tickets, isLoading, leads, showAlert } = useGlobalState();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   const currentPath = location.pathname.split('/')[1] || 'dashboard';
 
   const LOGO_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQP3GbpiX6PTXwBPogsN7Z9GYViQF7RciaBSJ9sXPDGjhq5SY25Con616krp_COWQE8TkDZjJYNaPLR9Lk9z6VDs_ZYcL0zmABWLkumfWRTkFgBo8HBdFYfGUCV1KZmuliOc0v10Rm_7PGFXgPFwMipN_bonERXvYkH9I95mQzQqheiK9FRQltiA3NP4g/s320/Adobe%20Express%20-%20file.png";
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    if (showProfileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfileMenu]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -282,13 +300,51 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
               </span>
             </button>
 
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{user.name}</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">{user.role}</p>
-              <p className="text-[9px] text-gray-400 dark:text-gray-500 truncate max-w-[120px]">{user.email}</p>
-            </div>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2E7D32] rounded-full flex items-center justify-center text-white shadow-md text-xs sm:text-base">
-              {user.name?.charAt(0) || '?'}
+            <div className="relative" ref={profileMenuRef}>
+              <button
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="flex items-center space-x-2 sm:space-x-4 focus:outline-none"
+              >
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{user.name}</p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">{user.role}</p>
+                  <p className="text-[9px] text-gray-400 dark:text-gray-500 truncate max-w-[120px]">{user.email}</p>
+                </div>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2E7D32] rounded-full flex items-center justify-center text-white shadow-md text-xs sm:text-base cursor-pointer hover:bg-opacity-90 transition-all">
+                  {user.name?.charAt(0) || '?'}
+                </div>
+              </button>
+
+              {/* Mobile Profile Dropdown */}
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 animate-scaleIn origin-top-right z-50">
+                  <div className="px-4 py-3 border-b dark:border-gray-700 sm:hidden">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.name}</p>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">{user.role}</p>
+                    <p className="text-[9px] text-gray-400 dark:text-gray-500 truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate('/admin-profile');
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center"
+                  >
+                    <span className="material-icons-outlined text-base mr-2">manage_accounts</span>
+                    Account
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      onLogout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center"
+                  >
+                    <span className="material-icons-outlined text-base mr-2">logout</span>
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </header>
