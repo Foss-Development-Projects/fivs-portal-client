@@ -497,7 +497,7 @@ const DataEntryLedger: React.FC = () => {
                           <button onClick={() => setSelectedRecord(rec)} className="w-10 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/10 rounded-full text-blue-500 hover:text-blue-600 transition-all" title="View Details">
                             <span className="material-icons-outlined">visibility</span>
                           </button>
-                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-full text-gray-400 hover:text-[#2E7D32] transition-all" title="Edit/Audit">
+                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="w-10 h-10 flex items-center justify-center bg-green-50 dark:bg-green-900/10 rounded-full text-green-600 hover:text-green-700 transition-all" title="Edit/Audit">
                             <span className="material-icons-outlined">edit_note</span>
                           </button>
                           <button onClick={() => handleDelete(rec.id)} className="w-10 h-10 flex items-center justify-center bg-red-50 dark:bg-red-900/10 rounded-full text-red-400 hover:text-red-600 transition-all" title="Remove Record">

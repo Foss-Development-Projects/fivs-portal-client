@@ -622,15 +622,15 @@ const AdminPayoutRecords: React.FC = () => {
         <table className="w-full text-left min-w-[1400px]">
           <thead className="bg-gray-50 dark:bg-gray-900 text-[10px] uppercase font-black text-gray-400 border-b dark:border-gray-700">
             <tr>
-              <th className="px-8 py-5">Record Details</th>
-              <th className="px-8 py-5">Vehicle & Carrier</th>
-              <th className="px-8 py-5">Revenue Source</th>
-              <th className="px-8 py-5">Financial Summary</th>
-              <th className="px-8 py-5">Split Info (OD/TP)</th>
-              <th className="px-8 py-5">Adjustments</th>
-              <th className="px-8 py-5">Net Profit</th>
-              <th className="px-8 py-5">Status</th>
-              <th className="px-8 py-5 text-right">Actions</th>
+              <th className="px-8 py-5 min-w-[200px]">Record Details</th>
+              <th className="px-8 py-5 min-w-[350px]">Vehicle & Carrier</th>
+              <th className="px-8 py-5 min-w-[180px]">Revenue Source</th>
+              <th className="px-8 py-5 min-w-[180px]">Financial Summary</th>
+              <th className="px-8 py-5 min-w-[160px]">Split Info (OD/TP)</th>
+              <th className="px-8 py-5 min-w-[160px]">Adjustments</th>
+              <th className="px-8 py-5 min-w-[160px]">Net Profit</th>
+              <th className="px-8 py-5 min-w-[140px]">Status</th>
+              <th className="px-8 py-5 text-right min-w-[180px]">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y dark:divide-gray-700 text-sm">
@@ -643,7 +643,7 @@ const AdminPayoutRecords: React.FC = () => {
                 </td>
                 <td className="px-8 py-6">
                   <p className="font-black dark:text-white uppercase tracking-wider">{rec.vehicleNumber}</p>
-                  <p className="text-[9px] text-gray-400 font-bold truncate max-w-[150px]">{rec.insuranceCompany}</p>
+                  <p className="text-[9px] text-gray-400 font-bold whitespace-nowrap">{rec.insuranceCompany}</p>
                 </td>
                 <td className="px-8 py-6">
                   <p className="text-[10px] font-black text-blue-600 uppercase">{rec.aggregatorName}</p>
@@ -685,10 +685,10 @@ const AdminPayoutRecords: React.FC = () => {
                 </td>
                 <td className="px-8 py-6 text-right">
                   <div className="flex justify-end gap-2 transition-opacity">
-                    <button onClick={() => setSelectedViewRecord(rec)} className="p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl text-blue-500 hover:text-blue-600 transition-all shadow-sm" title="View Details">
+                    <button onClick={() => setSelectedViewRecord(rec)} className="w-10 h-10 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center text-blue-500 hover:text-blue-600 transition-all shadow-sm" title="View Details">
                       <span className="material-icons-outlined text-lg">visibility</span>
                     </button>
-                    <button onClick={() => setEditingRecord(rec)} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-gray-400 hover:text-[#2E7D32] transition-all shadow-sm">
+                    <button onClick={() => setEditingRecord(rec)} className="w-10 h-10 bg-green-50 dark:bg-green-900/10 rounded-full flex items-center justify-center text-green-600 hover:text-green-700 transition-all shadow-sm">
                       <span className="material-icons-outlined text-lg">edit</span>
                     </button>
                     <button
@@ -698,7 +698,7 @@ const AdminPayoutRecords: React.FC = () => {
                         () => deleteAdminPayoutRecord(rec.id),
                         'error'
                       )}
-                      className="p-3 bg-red-50 dark:bg-red-900/10 rounded-xl text-red-400 hover:text-red-600 transition-all shadow-sm"
+                      className="w-10 h-10 bg-red-50 dark:bg-red-900/10 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 transition-all shadow-sm"
                     >
                       <span className="material-icons-outlined text-lg">delete_sweep</span>
                     </button>
