@@ -154,3 +154,23 @@ export const initFormPersistence = () => {
         observer.disconnect();
     };
 };
+
+/**
+ * Manually clears all persisted data for the current page.
+ * Useful for SPA transitions or custom submit handlers where <form> submit isn't used.
+ */
+export const clearPagePersistence = () => {
+    const path = window.location.pathname.replace(/\//g, '_');
+    const prefix = `${STORAGE_PREFIX}${path}_`;
+
+    // Collect keys first to avoid iterator invalidation issues (though rare in simple loop)
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) {
+            keysToRemove.push(key);
+        }
+    }
+
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+};

@@ -199,7 +199,10 @@ export const portalApi = {
         if (panMatch) result.panNo = panMatch[0];
 
         const dobMatch = text.match(/(\d{2}\/\d{2}\/\d{4})/);
-        if (dobMatch) result.dob = dobMatch[0]; // TODO: Format to YYYY-MM-DD if needed
+        if (dobMatch) {
+          const [day, month, year] = dobMatch[0].split('/');
+          result.dob = `${year}-${month}-${day}`;
+        }
       } else if (type === 'aadhaar') {
         // Aadhaar: 12 digits, often XXXX XXXX XXXX
         const aadhaarMatch = text.match(/\d{4}\s\d{4}\s\d{4}/);

@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useGlobalState } from '@/context';
 import { AutoFetchRecord, ContactPerson, AdminPayoutRecord } from '@/types';
 import { portalApi as api } from '@/services/portalApi';
+import { clearPagePersistence } from '@/utils/formPersistence';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES, RELATIONS_LIST } from '@/constants';
 
 // Data Entry Ledger Component
@@ -212,6 +213,7 @@ const DataEntryLedger: React.FC = () => {
       setFileObjects({});
       setCurrentStep(1);
       setErrorMessage(null);
+      clearPagePersistence();
     } catch (err: any) {
       console.error("Submission Error", err);
       setErrorMessage(`Failed to save record: ${err.message || 'Unknown Server Error'}`);
@@ -522,7 +524,7 @@ const DataEntryLedger: React.FC = () => {
                     <button
                       key={step}
                       onClick={() => { setCurrentStep(step); setErrorMessage(null); }}
-                      className={`w-10 h-1.5 rounded-full transition-all ${currentStep === step ? 'bg-[#2E7D32]' : currentStep > step ? 'bg-green-200' : 'bg-gray-200 dark:bg-gray-700'} hover:opacity-80 cursor-pointer`}
+                      className={`w-12 h-[11px] rounded-full transition-all ${currentStep === step ? 'bg-[#2E7D32] scale-105' : currentStep > step ? 'bg-green-200' : 'bg-gray-200 dark:bg-gray-700'} hover:opacity-80 cursor-pointer`}
                       title={`Go to Step ${step}: ${stepLabels[step - 1]}`}
                     />
                   ))}
@@ -609,18 +611,6 @@ const DataEntryLedger: React.FC = () => {
                   <div className="space-y-10 animate-fadeIn">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <WizardUpload
-                        label="RC Back"
-                        subtext="Back side."
-                        file={formData.documents?.rcBack}
-                        onUpload={e => handleFileUpload(e, 'rcBack')}
-                        onPreview={() => setZoomedImage(formData.documents?.rcBack || null)}
-                        processing={isProcessing}
-                        onReset={() => {
-                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcBack: undefined } }));
-                          setFileObjects(prev => { const n = { ...prev }; delete n.rcBack; return n; });
-                        }}
-                      />
-                      <WizardUpload
                         label="RC Front"
                         subtext="Front side."
                         file={formData.documents?.rcFront}
@@ -630,6 +620,18 @@ const DataEntryLedger: React.FC = () => {
                         onReset={() => {
                           setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcFront: undefined } }));
                           setFileObjects(prev => { const n = { ...prev }; delete n.rcFront; return n; });
+                        }}
+                      />
+                      <WizardUpload
+                        label="RC Back"
+                        subtext="Back side."
+                        file={formData.documents?.rcBack}
+                        onUpload={e => handleFileUpload(e, 'rcBack')}
+                        onPreview={() => setZoomedImage(formData.documents?.rcBack || null)}
+                        processing={isProcessing}
+                        onReset={() => {
+                          setFormData(prev => ({ ...prev, documents: { ...prev.documents, rcBack: undefined } }));
+                          setFileObjects(prev => { const n = { ...prev }; delete n.rcBack; return n; });
                         }}
                       />
                     </div>
