@@ -131,7 +131,17 @@ const App: React.FC = () => {
       if (currentUser && Array.isArray(dbUsers)) {
         const freshUser = dbUsers.find(u => u.id === currentUser.id);
         if (freshUser) {
-          setCurrentUser(freshUser);
+          // Check if user data actually changed to prevent infinite loops
+          const hasChanged =
+            freshUser.name !== currentUser.name ||
+            freshUser.email !== currentUser.email ||
+            freshUser.mobile !== currentUser.mobile ||
+            freshUser.role !== currentUser.role ||
+            freshUser.status !== currentUser.status;
+
+          if (hasChanged) {
+            setCurrentUser(freshUser);
+          }
         }
       }
 
