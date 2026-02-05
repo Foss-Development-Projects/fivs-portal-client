@@ -75,5 +75,6 @@ input[type=number] {
 
 @font-face {
     font-family: Inter;
+    font-display: block;
     src: url('./../fonts/Inter-VariableFont_opsz\,wght.woff2') format('woff2');
 }
