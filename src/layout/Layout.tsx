@@ -285,6 +285,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
             <div className="text-right hidden sm:block">
               <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{user.name}</p>
               <p className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">{user.role}</p>
+              <p className="text-[9px] text-gray-400 dark:text-gray-500 truncate max-w-[120px]">{user.email}</p>
             </div>
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#2E7D32] rounded-full flex items-center justify-center text-white shadow-md text-xs sm:text-base">
               {user.name?.charAt(0) || '?'}

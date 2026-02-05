@@ -8,6 +8,7 @@ const AdminProfile: React.FC = () => {
     const [formData, setFormData] = useState({
         name: currentUser?.name || '',
         email: currentUser?.email || '',
+        mobile: currentUser?.mobile || '',
         password: '',
         confirmPassword: ''
     });
@@ -27,7 +28,8 @@ const AdminProfile: React.FC = () => {
         try {
             const updates: any = {
                 name: formData.name,
-                email: formData.email
+                email: formData.email,
+                mobile: formData.mobile
             };
 
             if (formData.password) {
@@ -45,13 +47,13 @@ const AdminProfile: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8 animate-fadeIn">
-            <div>
+        <div className="space-y-8 animate-fadeIn max-w-4xl mx-auto">
+            <div className="text-center">
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">Account Settings</h2>
                 <p className="text-gray-500 dark:text-gray-400">Manage your administrative profile and security credentials.</p>
             </div>
 
-            <div className="max-w-2xl bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
@@ -74,6 +76,17 @@ const AdminProfile: React.FC = () => {
                                 className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
                             />
                         </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                        <input
+                            type="tel"
+                            required
+                            value={formData.mobile}
+                            onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                        />
                     </div>
 
                     <div className="pt-6 border-t dark:border-gray-700 mt-6">
@@ -113,7 +126,7 @@ const AdminProfile: React.FC = () => {
                 </form>
             </div>
 
-            <div className="p-8 bg-blue-50 dark:bg-blue-900/10 rounded-[2.5rem] border border-blue-100 dark:border-blue-900/30 flex items-start space-x-6 max-w-2xl">
+            <div className="p-8 bg-blue-50 dark:bg-blue-900/10 rounded-[2.5rem] border border-blue-100 dark:border-blue-900/30 flex items-start space-x-6">
                 <span className="material-icons-outlined text-blue-600 text-3xl">shield</span>
                 <div className="space-y-2">
                     <p className="text-[11px] font-black text-blue-600 uppercase tracking-widest">Security Note</p>

@@ -128,6 +128,83 @@ const AdminPayoutRecords: React.FC = () => {
     printWindow.document.close();
   };
 
+  const handleExcelExport = () => {
+    if (filteredRecords.length === 0) {
+      showAlert('Export Failed', "No records match the current filters.", 'info');
+      return;
+    }
+
+    const headers = [
+      "DATE", "LEAD ID", "CUSTOMER NAME", "VEHICLE NUMBER", "INSURER",
+      "AGGREGATOR", "TYPE", "PREMIUM", "COMMISSION %",
+      "COMM ON", "OD PREMIUM", "TP PREMIUM", "OD %", "TP %",
+      "DISCOUNT", "BROKERAGE", "NET PROFIT", "STATUS", "REMARKS"
+    ];
+
+    const html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
+        <style>
+          .title { background-color: #2E7D32; color: #ffffff; font-weight: bold; font-size: 14pt; padding: 10px; text-align: center; }
+          th { background-color: #f3f4f6; color: #374151; font-weight: bold; border: 1px solid #d1d5db; padding: 8px; }
+          td { border: 1px solid #e5e7eb; padding: 6px; }
+          .positive { color: #059669; font-weight: bold; }
+          .negative { color: #dc2626; font-weight: bold; }
+          .received { background-color: #ecfdf5; color: #065f46; font-weight: bold; text-align: center; }
+          .pending { background-color: #fffbeb; color: #92400e; font-weight: bold; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr><td colspan="${headers.length}" class="title">FIVS PAYOUT REGISTRY REPORT - ${new Date().toLocaleDateString()}</td></tr>
+          <tr></tr>
+          <thead>
+            <tr>
+              ${headers.map(h => `<th>${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredRecords.map(r => `
+              <tr>
+                <td>${r.timestamp?.split(' ')[0]}</td>
+                <td>${r.id}</td>
+                <td style="text-transform: uppercase;">${r.customerName}</td>
+                <td style="text-transform: uppercase;">${r.vehicleNumber}</td>
+                <td>${r.insuranceCompany}</td>
+                <td>${r.aggregatorName}</td>
+                <td>${r.policyType}</td>
+                <td>${(Number(r.premiumAmount) || 0).toFixed(2)}</td>
+                <td>${r.commissionRate}%</td>
+                <td>${r.commissionOn}</td>
+                <td>${(r.odPremium || 0).toFixed(2)}</td>
+                <td>${(r.tpPremium || 0).toFixed(2)}</td>
+                <td>${r.odPercentage || 0}%</td>
+                <td>${r.tpPercentage || 0}%</td>
+                <td>${(Number(r.discount) || 0).toFixed(2)}</td>
+                <td>${(Number(r.brokerPayment) || 0).toFixed(2)}</td>
+                <td class="${r.netProfit >= 0 ? 'positive' : 'negative'}">${(Number(r.netProfit) || 0).toFixed(2)}</td>
+                <td class="${r.paymentReceived === 'Yes' ? 'received' : 'pending'}">${r.paymentReceived === 'Yes' ? 'RECEIVED' : 'PENDING'}</td>
+                <td>${r.remarks || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `FIVS_Payout_Report_${new Date().toISOString().slice(0, 10)}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setShowCsvDialog(false);
+  };
+
   const handleCsvExport = () => {
     if (filteredRecords.length === 0) {
       showAlert('Export Failed', "No records match the current filters.", 'info');
@@ -278,9 +355,12 @@ const AdminPayoutRecords: React.FC = () => {
                 <input type="date" id="export-end-date" name="endDate" className="w-full px-4 py-3 border-2 border-gray-50 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={endDate} onChange={e => setEndDate(e.target.value)} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={handleCsvExport} className="bg-[#2E7D32] text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center">
-                <span className="material-icons-outlined mr-2 text-sm">download</span> CSV Export
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              <button onClick={handleExcelExport} className="bg-[#2E7D32] text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center col-span-full">
+                <span className="material-icons-outlined mr-2 text-sm">auto_graph</span> Standard Excel Report (Formatted)
+              </button>
+              <button onClick={handleCsvExport} className="bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-gray-200 flex items-center justify-center">
+                <span className="material-icons-outlined mr-2 text-sm">download</span> Raw CSV
               </button>
               <button onClick={handlePrint} className="bg-blue-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center">
                 <span className="material-icons-outlined mr-2 text-sm">print</span> Print PDF
