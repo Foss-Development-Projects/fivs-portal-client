@@ -446,7 +446,7 @@ const DataEntryLedger: React.FC = () => {
                     <th className="px-8 py-5">Timestamp / ID</th>
                     <th className="px-8 py-5 min-w-[200px]">Owner Details</th>
                     <th className="px-8 py-5 min-w-[200px]">Vehicle & Policy</th>
-                    <th className="px-8 py-5 min-w-[250px]">Insurers</th>
+                    <th className="px-8 py-5 min-w-[350px]">Insurers</th>
                     <th className="px-8 py-5 min-w-[180px]">Renewal Timeline</th>
                     <th className="px-8 py-5">Lifecycle</th>
                     <th className="px-8 py-5 text-right">Actions</th>
@@ -468,7 +468,7 @@ const DataEntryLedger: React.FC = () => {
                         <p className="text-[10px] text-gray-400">Pol: {rec.policyNo || 'N/A'}</p>
                       </td>
                       <td className="px-8 py-6">
-                        <p className="text-[11px] font-bold dark:text-gray-300">{rec.insuranceCompany}</p>
+                        <p className="font-bold dark:text-gray-300">{rec.insuranceCompany}</p>
                         <p className="text-[10px] text-blue-500 font-black uppercase">{rec.webAggregator}</p>
                       </td>
                       <td className="px-8 py-6">
