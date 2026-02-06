@@ -59,7 +59,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const currentPath = location.pathname.split('/')[1] || 'dashboard';
+  const currentPath = location.pathname.split('/')[1] || 'overview';
 
   const LOGO_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQP3GbpiX6PTXwBPogsN7Z9GYViQF7RciaBSJ9sXPDGjhq5SY25Con616krp_COWQE8TkDZjJYNaPLR9Lk9z6VDs_ZYcL0zmABWLkumfWRTkFgBo8HBdFYfGUCV1KZmuliOc0v10Rm_7PGFXgPFwMipN_bonERXvYkH9I95mQzQqheiK9FRQltiA3NP4g/s320/Adobe%20Express%20-%20file.png";
 
@@ -111,7 +111,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
   }, [leads, user.id, user.role]);
 
   const navItems = user.role === UserRole.PARTNER ? [
-    { id: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
+    { id: 'overview', icon: 'dashboard', label: 'Dashboard' },
     { id: 'kyc', icon: 'verified_user', label: 'KYC' },
     { id: 'leads', icon: 'assignment', label: 'Leads' },
     { id: 'renewals', icon: 'update', label: 'Renewals', badge: dueRenewalCount },
@@ -119,7 +119,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
     { id: 'tickets', icon: 'support_agent', label: 'Support' },
     { id: 'notifications', icon: 'notifications', label: 'Alerts', badge: unreadNotifCount },
   ] : [
-    { id: 'dashboard', icon: 'analytics', label: 'Overview' },
+    { id: 'overview', icon: 'analytics', label: 'Overview' },
     { id: 'autofetch', icon: 'keyboard', label: 'Data Entry' },
     { id: 'payout-records', icon: 'receipt_long', label: 'Payout Logs' },
     { id: 'partners', icon: 'people', label: 'Partners' },
@@ -207,7 +207,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
               <div className="mb-6">
                 <p className="px-4 py-2 text-[10px] font-black uppercase text-gray-400">Admin Console</p>
                 {[
-                  { id: 'dashboard', icon: 'analytics', label: 'Overview' },
+                  { id: 'overview', icon: 'analytics', label: 'Overview' },
                   { id: 'data-entry', icon: 'keyboard', label: 'Data Entry' },
                   { id: 'payout-records', icon: 'receipt_long', label: 'Payout Logs' },
                 ].map((item) => (
@@ -218,7 +218,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                     label={item.label}
                   />
                 ))}
-                <SidebarItem to="/admin-profile" icon="manage_accounts" label="My Account" />
+                <SidebarItem to="/my-account" icon="manage_accounts" label="My Account" />
               </div>
 
               {/* Partner Console */}
@@ -326,7 +326,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                   <button
                     onClick={() => {
                       setShowProfileMenu(false);
-                      navigate('/admin-profile');
+                      navigate('/my-account');
                     }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center"
                   >

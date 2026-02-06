@@ -63,26 +63,72 @@ const App: React.FC = () => {
     setAlert({ title, message, type, onConfirm });
   }, []);
 
+  const logout = useCallback(() => {
+    setCurrentUser(null);
+    localStorage.removeItem('fivs_session_user');
+    localStorage.removeItem('fivs_auth_token');
+    localStorage.removeItem('fivs_session_timestamp');
+    navigate('/');
+  }, [navigate]);
+
   // 1. Initial hydration from local storage
   useEffect(() => {
     const savedUser = localStorage.getItem('fivs_session_user');
-    if (savedUser) {
-      try {
-        setCurrentUser(JSON.parse(savedUser));
-      } catch (e) {
-        localStorage.removeItem('fivs_session_user');
+    const sessionTimestamp = localStorage.getItem('fivs_session_timestamp');
+
+    if (savedUser && sessionTimestamp) {
+      const loginTime = parseInt(sessionTimestamp, 10);
+      const currentTime = Date.now();
+      const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+
+      if (currentTime - loginTime > sessionDuration) {
+        // Session expired
+        console.log("Session expired. Logging out.");
+        logout();
+      } else {
+        try {
+          setCurrentUser(JSON.parse(savedUser));
+        } catch (e) {
+          logout();
+        }
       }
     }
     setIsLoading(false);
-  }, []);
+  }, [logout]);
 
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('fivs_session_user', JSON.stringify(currentUser));
+      // Set timestamp only if it doesn't already exist (to preserve initial login time)
+      if (!localStorage.getItem('fivs_session_timestamp')) {
+        localStorage.setItem('fivs_session_timestamp', Date.now().toString());
+      }
     } else {
       localStorage.removeItem('fivs_session_user');
+      localStorage.removeItem('fivs_session_timestamp');
     }
   }, [currentUser]);
+
+  // Periodic session check (every 5 minutes)
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const checkInterval = setInterval(() => {
+      const sessionTimestamp = localStorage.getItem('fivs_session_timestamp');
+      if (sessionTimestamp) {
+        const loginTime = parseInt(sessionTimestamp, 10);
+        const currentTime = Date.now();
+        const sessionDuration = 24 * 60 * 60 * 1000;
+
+        if (currentTime - loginTime > sessionDuration) {
+          console.log("Session expired during active state. Logging out.");
+          logout();
+        }
+      }
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(checkInterval);
+  }, [currentUser, logout]);
 
   // Form persistence initialization
   useEffect(() => {
@@ -220,32 +266,27 @@ const App: React.FC = () => {
     }}>
       <div className={darkMode ? 'dark' : ''}>
         {!currentUser ? (
-          <Home onLogin={() => navigate('/dashboard')} />
+          <Home onLogin={() => navigate('/overview')} />
         ) : (
           <Layout
             user={currentUser}
-            onLogout={() => {
-              setCurrentUser(null);
-              localStorage.removeItem('fivs_session_user');
-              localStorage.removeItem('fivs_auth_token');
-              navigate('/');
-            }}
+            onLogout={logout}
           >
             <Routes>
               {currentUser.role === UserRole.PARTNER ? (
                 <>
-                  <Route path="/dashboard" element={<PartnerDashboard user={currentUser} />} />
+                  <Route path="/overview" element={<PartnerDashboard user={currentUser} />} />
                   <Route path="/kyc" element={<PartnerKYC user={currentUser} />} />
                   <Route path="/leads" element={<PartnerLeads user={currentUser} />} />
                   <Route path="/renewals" element={<PartnerRenewals user={currentUser} />} />
                   <Route path="/wallet" element={<PartnerWallet user={currentUser} />} />
                   <Route path="/tickets" element={<PartnerTickets user={currentUser} />} />
                   <Route path="/notifications" element={<PartnerNotifications user={currentUser} />} />
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="*" element={<Navigate to="/overview" replace />} />
                 </>
               ) : (
                 <>
-                  <Route path="/dashboard" element={<AdminDashboard />} />
+                  <Route path="/overview" element={<AdminDashboard />} />
                   <Route path="/partners" element={<AdminPartners />} />
                   <Route path="/kyc-approval" element={<AdminKYC />} />
                   <Route path="/all-leads" element={<AdminLeads />} />
@@ -255,8 +296,8 @@ const App: React.FC = () => {
                   <Route path="/payouts" element={<AdminPayouts />} />
                   <Route path="/admin-notifications" element={<AdminNotifications />} />
                   <Route path="/admin-tickets" element={<AdminTickets />} />
-                  <Route path="/admin-profile" element={<AdminProfile />} />
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/my-account" element={<AdminProfile />} />
+                  <Route path="*" element={<Navigate to="/overview" replace />} />
                 </>
               )}
             </Routes>
