@@ -11,6 +11,8 @@ import { createWorker } from 'tesseract.js';
 
 // Hybrid API Caller
 const ROOT_URL = import.meta.env.VITE_ROOT_URL || '';
+console.log('[API] Environment Variables:', import.meta.env);
+console.log('[API] Detected ROOT_URL:', ROOT_URL);
 
 const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
@@ -29,7 +31,9 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
     }
 
     // 1. Attempt Network Call
-    const response = await fetch(`${ROOT_URL}/api/${path}`, {
+    const fetchUrl = `${ROOT_URL}/api/${path}`;
+    console.log(`[API] Fetching: ${fetchUrl}`, { ROOT_URL });
+    const response = await fetch(fetchUrl, {
       method,
       headers,
       body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
@@ -79,28 +83,11 @@ export const portalApi = {
 
   // --- AUTHENTICATION ---
   login: async (email: string, password?: string): Promise<User> => {
-    // SECURITY UPDATE: Use Server-Side Validation
-    try {
-      const response = await fetch(`/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Login failed');
-      }
-
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem('fivs_auth_token', data.token);
-      }
-      return data.user;
-    } catch (e: any) {
-      console.error('Login Error:', e);
-      throw new Error(e.message || 'Invalid credentials');
+    const data = await callApi('auth/login', 'POST', { email, password });
+    if (data.token) {
+      localStorage.setItem('fivs_auth_token', data.token);
     }
+    return data.user;
   },
 
   checkSession: async (): Promise<void> => {
@@ -110,17 +97,7 @@ export const portalApi = {
   register: async (userData: any): Promise<User> => {
     const id = `P${Date.now()}`;
     const newUser = { ...userData, id, status: UserStatus.PENDING, kycStatus: KYCStatus.NOT_SUBMITTED, leadSubmissionEnabled: true, kycDocuments: [] };
-
-    const response = await fetch(`/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newUser)
-    });
-
-    if (!response.ok) {
-      throw new Error("Registration Failed");
-    }
-    return await response.json();
+    return await callApi('auth/register', 'POST', newUser);
   },
 
   // --- DATA OPERATIONS ---
