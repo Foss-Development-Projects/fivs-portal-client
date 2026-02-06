@@ -10,7 +10,8 @@ export default defineConfig(() => {
       host: '0.0.0.0',
       proxy: {
         '/api': {
-          target: 'http://127.0.0.1:54321',
+          // target: 'http://127.0.0.1:54321',
+          target: 'https://fivs-portal-server.vercel.app',
           changeOrigin: true,
         }
       }
