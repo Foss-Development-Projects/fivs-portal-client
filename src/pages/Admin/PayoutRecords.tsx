@@ -685,11 +685,11 @@ const AdminPayoutRecords: React.FC = () => {
                 </td>
                 <td className="px-8 py-6 text-right">
                   <div className="flex justify-end gap-2 transition-opacity">
-                    <button onClick={() => setSelectedViewRecord(rec)} className="w-10 h-10 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center text-blue-500 hover:text-blue-600 transition-all shadow-sm" title="View Details">
-                      <span className="material-icons-outlined text-lg">visibility</span>
+                    <button onClick={() => setSelectedViewRecord(rec)} className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center text-blue-500 hover:text-blue-600 transition-all shadow-sm cursor-pointer" title="View Details">
+                      <span className="material-icons-outlined text-base">visibility</span>
                     </button>
-                    <button onClick={() => setEditingRecord(rec)} className="w-10 h-10 bg-green-50 dark:bg-green-900/10 rounded-full flex items-center justify-center text-green-600 hover:text-green-700 transition-all shadow-sm">
-                      <span className="material-icons-outlined text-lg">edit</span>
+                    <button onClick={() => setEditingRecord(rec)} className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-full flex items-center justify-center text-green-600 hover:text-green-700 transition-all shadow-sm cursor-pointer">
+                      <span className="material-icons-outlined text-base">edit</span>
                     </button>
                     <button
                       onClick={() => showConfirm(
@@ -698,9 +698,9 @@ const AdminPayoutRecords: React.FC = () => {
                         () => deleteAdminPayoutRecord(rec.id),
                         'error'
                       )}
-                      className="w-10 h-10 bg-red-50 dark:bg-red-900/10 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 transition-all shadow-sm"
+                      className="w-8 h-8 bg-red-50 dark:bg-red-900/10 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 transition-all shadow-sm cursor-pointer"
                     >
-                      <span className="material-icons-outlined text-lg">delete_sweep</span>
+                      <span className="material-icons-outlined text-base">delete_sweep</span>
                     </button>
                   </div>
                 </td>

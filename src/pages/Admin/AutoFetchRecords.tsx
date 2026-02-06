@@ -260,20 +260,67 @@ const DataEntryLedger: React.FC = () => {
     }).sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
   }, [autoFetchRecords, searchQuery, filterStatus, filterAggregator, filterMonth, startDate, endDate]);
 
-  const handleCsvExport = () => {
+  const handleExcelExport = () => {
     if (filteredRecords.length === 0) {
       showAlert('Filter Alert', "No records match the current filters.", 'info');
       return;
     }
+
     const headers = ["Timestamp", "Lead ID", "Owner Name", "Mobile", "Vehicle Reg No", "Policy No", "Aggregator", "Insurance Co", "Renewal Date", "Status", "Last Updated"];
-    const rows = filteredRecords.map(r => [`"${r.timestamp}"`, `"${r.id}"`, `"${r.ownerName}"`, `"${r.ownerPhone}"`, `"${r.vehicleRegNo}"`, `"${r.policyNo}"`, `"${r.webAggregator}"`, `"${r.insuranceCompany}"`, `"${r.renewalDate}"`, `"${r.status}"`, `"${new Date(r.lastUpdated).toLocaleString()}"`]);
-    const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
-    const encodedUri = encodeURI(csvContent);
+
+    const html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8">
+        <style>
+          .title { font-size: 18px; font-weight: bold; text-align: center; color: #2E7D32; padding: 20px; }
+          table { border-collapse: collapse; width: 100%; font-family: sans-serif; }
+          th { background-color: #f3f4f6; color: #374151; font-weight: bold; border: 1px solid #d1d5db; padding: 12px; text-transform: uppercase; font-size: 10px; }
+          td { border: 1px solid #e5e7eb; padding: 10px; font-size: 11px; }
+          .status-renewed { background-color: #ecfdf5; color: #065f46; font-weight: bold; }
+          .status-missed { background-color: #fef2f2; color: #991b1b; font-weight: bold; }
+          .status-fresh { background-color: #eff6ff; color: #1e40af; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr><td colspan="${headers.length}" class="title">FIVS INTELLIGENCE REGISTRY REPORT - ${new Date().toLocaleDateString()}</td></tr>
+          <tr></tr>
+          <thead>
+            <tr>
+              ${headers.map(h => `<th>${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredRecords.map(r => `
+              <tr>
+                <td>${r.timestamp}</td>
+                <td>${r.id}</td>
+                <td style="text-transform: uppercase;">${r.ownerName}</td>
+                <td>${r.ownerPhone}</td>
+                <td style="text-transform: uppercase;">${r.vehicleRegNo}</td>
+                <td>${r.policyNo}</td>
+                <td>${r.webAggregator}</td>
+                <td>${r.insuranceCompany}</td>
+                <td>${r.renewalDate}</td>
+                <td class="status-${r.status}">${r.status.toUpperCase()}</td>
+                <td>${new Date(r.lastUpdated).toLocaleString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Records_Export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.href = url;
+    link.download = `Intelligence_Report_${new Date().toISOString().slice(0, 10)}.xls`;
     document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     setShowCsvDialog(false);
   };
 
@@ -384,7 +431,7 @@ const DataEntryLedger: React.FC = () => {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
             <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 animate-scaleIn border border-gray-100">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-black uppercase tracking-widest">Custom CSV Generator</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-blue-600">Excel Report Generator</h3>
                 <button onClick={() => setShowCsvDialog(false)} className="text-gray-400 hover:text-red-500"><span className="material-icons-outlined">close</span></button>
               </div>
               <div className="space-y-4 mb-8">
@@ -397,8 +444,8 @@ const DataEntryLedger: React.FC = () => {
                   <input type="date" className="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </div>
               </div>
-              <button onClick={handleCsvExport} className="w-full bg-[#2E7D32] text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg flex items-center justify-center">
-                <span className="material-icons-outlined mr-2 text-sm">download</span> Generate & Download
+              <button onClick={handleExcelExport} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg flex items-center justify-center hover:bg-blue-700 transition-all">
+                <span className="material-icons-outlined mr-2 text-sm">auto_graph</span> Generate & Download .XLS
               </button>
             </div>
           </div>
@@ -411,7 +458,7 @@ const DataEntryLedger: React.FC = () => {
           <p className="text-sm text-gray-500">Document-driven automation for professional insurance lifecycle registry.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setShowCsvDialog(true)} className="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center">
+          <button onClick={() => setShowCsvDialog(true)} className="bg-blue-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-blue-700 transition-all flex items-center border-none">
             <span className="material-icons-outlined mr-2">analytics</span> Export Report
           </button>
           <button onClick={() => { setFormData(initialRecord); setActiveView('wizard'); setCurrentStep(1); setErrorMessage(null); }} className="bg-[#2E7D32] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-[#1b5e20] transition-all flex items-center">
@@ -494,14 +541,14 @@ const DataEntryLedger: React.FC = () => {
                       </td>
                       <td className="px-8 py-6 text-right">
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => setSelectedRecord(rec)} className="w-10 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/10 rounded-full text-blue-500 hover:text-blue-600 transition-all" title="View Details">
-                            <span className="material-icons-outlined">visibility</span>
+                          <button onClick={() => setSelectedRecord(rec)} className="w-8 h-8 flex items-center justify-center bg-blue-50 dark:bg-blue-900/10 rounded-full text-blue-500 hover:text-blue-600 transition-all cursor-pointer" title="View Details">
+                            <span className="material-icons-outlined text-base">visibility</span>
                           </button>
-                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="w-10 h-10 flex items-center justify-center bg-green-50 dark:bg-green-900/10 rounded-full text-green-600 hover:text-green-700 transition-all" title="Edit/Audit">
-                            <span className="material-icons-outlined">edit_note</span>
+                          <button onClick={() => { setFormData(rec); setActiveView('wizard'); setCurrentStep(totalSteps); }} className="w-8 h-8 flex items-center justify-center bg-green-50 dark:bg-green-900/10 rounded-full text-green-600 hover:text-green-700 transition-all cursor-pointer" title="Edit/Audit">
+                            <span className="material-icons-outlined text-base">edit_note</span>
                           </button>
-                          <button onClick={() => handleDelete(rec.id)} className="w-10 h-10 flex items-center justify-center bg-red-50 dark:bg-red-900/10 rounded-full text-red-400 hover:text-red-600 transition-all" title="Remove Record">
-                            <span className="material-icons-outlined">delete_outline</span>
+                          <button onClick={() => handleDelete(rec.id)} className="w-8 h-8 flex items-center justify-center bg-red-50 dark:bg-red-900/10 rounded-full text-red-400 hover:text-red-600 transition-all cursor-pointer" title="Remove Record">
+                            <span className="material-icons-outlined text-base">delete_outline</span>
                           </button>
                         </div>
                       </td>
