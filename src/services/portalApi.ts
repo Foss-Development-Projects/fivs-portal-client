@@ -10,6 +10,8 @@ import { createWorker } from 'tesseract.js';
 // const rootURL = 'http://localhost:3000';
 
 // Hybrid API Caller
+const ROOT_URL = import.meta.env.VITE_ROOT_URL || '';
+
 const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
     const token = localStorage.getItem('fivs_auth_token');
@@ -27,7 +29,7 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
     }
 
     // 1. Attempt Network Call
-    const response = await fetch(`/api/${path}`, {
+    const response = await fetch(`${ROOT_URL}/api/${path}`, {
       method,
       headers,
       body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
