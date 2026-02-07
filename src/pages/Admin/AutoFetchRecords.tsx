@@ -6,6 +6,7 @@ import { portalApi as api, ROOT_URL } from '@/services/api.service';
 import { clearPagePersistence } from '@/utils/formPersistence';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES, RELATIONS_LIST } from '@/constants';
 import { customAlphabet } from 'nanoid';
+import { compressLossless } from '@quicktoolsone/pdf-compress';
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 16);
 
@@ -70,15 +71,28 @@ const DataEntryLedger: React.FC = () => {
             type === 'rcBack' ? 'rcBack' :
               type === 'pan' ? 'panCard' : type;
 
+    let finalFile = file;
+    if (file.type === 'application/pdf') {
+      try {
+        const buffer = await file.arrayBuffer();
+        const result = await compressLossless(buffer);
+        finalFile = new File([result.pdf], file.name, { type: 'application/pdf' });
+        console.log(`[Compression] ${file.name}: ${file.size} -> ${finalFile.size} bytes`);
+      } catch (err) {
+        console.error("[Compression Failed]", err);
+        // Fallback to original file if compression fails
+      }
+    }
+
     // Store raw file for upload
-    setFileObjects(prev => ({ ...prev, [docKey]: file }));
+    setFileObjects(prev => ({ ...prev, [docKey]: finalFile }));
 
     // Clean up old preview if it was a blob
     const oldUrl = formData.documents?.[docKey];
     if (oldUrl?.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
 
     // USE BLOB URL FOR NATIVE BROWSER PREVIEW
-    const blobUrl = URL.createObjectURL(file);
+    const blobUrl = URL.createObjectURL(finalFile);
     setFormData(prev => ({
       ...prev,
       documents: { ...prev.documents, [docKey]: blobUrl }

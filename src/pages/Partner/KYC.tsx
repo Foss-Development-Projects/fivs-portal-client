@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, KYCStatus } from '@/types';
 import { useGlobalState } from '@/context';
+import { compressLossless } from '@quicktoolsone/pdf-compress';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -16,7 +17,7 @@ const KYCStep = ({ number, title, active }: { number: number, title: string, act
 );
 
 const FileInput = ({ label, id, fileData, onUpload, disabled }: { label: string, id: string, fileData?: string, onUpload: (data: string) => void, disabled?: boolean }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -27,12 +28,24 @@ const FileInput = ({ label, id, fileData, onUpload, disabled }: { label: string,
       return;
     }
 
+    let finalFile = file;
+    if (file.type === 'application/pdf') {
+      try {
+        const buffer = await file.arrayBuffer();
+        const result = await compressLossless(buffer);
+        finalFile = new File([result.pdf], file.name, { type: 'application/pdf' });
+        console.log(`[Compression] ${file.name}: ${file.size} -> ${finalFile.size} bytes`);
+      } catch (err) {
+        console.error("[Compression Failed]", err);
+      }
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       const result = event.target?.result as string;
       onUpload(result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   };
 
   return (

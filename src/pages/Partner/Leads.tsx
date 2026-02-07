@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { User, LeadStatus, Lead, LeadMessage } from '@/types';
 import { useGlobalState } from '@/context';
+import { compressLossless } from '@quicktoolsone/pdf-compress';
 import { LEAD_TYPES, INSURANCE_REQUIREMENTS, WEB_AGGREGATORS, INSURANCE_COMPANIES } from '@/constants';
 
 const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
@@ -65,11 +66,23 @@ const PartnerLeads: React.FC<{ user: User }> = ({ user }) => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files) as File[];
-      const promises = filesArray.map(file => {
+      const promises = filesArray.map(async file => {
+        let finalFile = file;
+        if (file.type === 'application/pdf') {
+          try {
+            const buffer = await file.arrayBuffer();
+            const result = await compressLossless(buffer);
+            finalFile = new File([result.pdf], file.name, { type: 'application/pdf' });
+            console.log(`[Compression] ${file.name}: ${file.size} -> ${finalFile.size} bytes`);
+          } catch (err) {
+            console.error("[Compression Failed]", err);
+          }
+        }
+
         return new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onload = (ev) => resolve(ev.target?.result as string);
-          reader.readAsDataURL(file);
+          reader.readAsDataURL(finalFile);
         });
       });
       const base64Files = await Promise.all(promises);
