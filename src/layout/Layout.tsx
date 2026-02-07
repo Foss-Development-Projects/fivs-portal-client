@@ -118,6 +118,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
     { id: 'wallet', icon: 'account_balance_wallet', label: 'Wallet' },
     { id: 'tickets', icon: 'support_agent', label: 'Support' },
     { id: 'notifications', icon: 'notifications', label: 'Alerts', badge: unreadNotifCount },
+    { id: 'my-account', icon: 'manage_accounts', label: 'My Account' },
   ] : [
     { id: 'overview', icon: 'analytics', label: 'Overview' },
     { id: 'autofetch', icon: 'keyboard', label: 'Data Entry' },

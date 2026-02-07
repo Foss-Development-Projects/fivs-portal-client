@@ -12,6 +12,7 @@ import PartnerRenewals from './pages/Partner/Renewals';
 import PartnerWallet from './pages/Partner/Wallet';
 import PartnerTickets from './pages/Partner/Tickets';
 import PartnerNotifications from './pages/Partner/Notifications';
+import PartnerMyAccount from './pages/Partner/MyAccount';
 import AdminDashboard from './pages/Admin/Dashboard';
 import AdminPartners from './pages/Admin/Partners';
 import AdminKYC from './pages/Admin/KYC';
@@ -279,6 +280,7 @@ const App: React.FC = () => {
                   <Route path="/wallet" element={<PartnerWallet user={currentUser} />} />
                   <Route path="/tickets" element={<PartnerTickets user={currentUser} />} />
                   <Route path="/notifications" element={<PartnerNotifications user={currentUser} />} />
+                  <Route path="/my-account" element={<PartnerMyAccount />} />
                   <Route path="*" element={<Navigate to="/overview" replace />} />
                 </>
               ) : (
