@@ -122,7 +122,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
   ] : [
     { id: 'overview', icon: 'analytics', label: 'Overview' },
     { id: 'autofetch', icon: 'keyboard', label: 'Data Entry' },
-    { id: 'payout-records', icon: 'receipt_long', label: 'Payout Logs' },
+    { id: 'payout-records', icon: 'receipt_long', label: 'Payout Records' },
     { id: 'partners', icon: 'people', label: 'Partners' },
     { id: 'kyc-approval', icon: 'fact_check', label: 'KYC Review' },
     { id: 'all-leads', icon: 'list_alt', label: 'Leads' },
@@ -210,7 +210,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                 {[
                   { id: 'overview', icon: 'analytics', label: 'Overview' },
                   { id: 'data-entry', icon: 'keyboard', label: 'Data Entry' },
-                  { id: 'payout-records', icon: 'receipt_long', label: 'Payout Logs' },
+                  { id: 'payout-records', icon: 'receipt_long', label: 'Payout Records' },
                 ].map((item) => (
                   <SidebarItem
                     key={item.id}
