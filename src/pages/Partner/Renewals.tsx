@@ -147,7 +147,7 @@ const PartnerRenewals: React.FC<{ user: User }> = ({ user }) => {
             id="renewal-search"
             name="renewalQuery"
             placeholder="Search Vehicle No or Name..."
-            className="w-full md:w-80 pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none focus:border-[#2E7D32]"
+            className="w-full md:w-80 pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none focus:border-[#2E7D32] shadow-inner transition-all font-bold"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />

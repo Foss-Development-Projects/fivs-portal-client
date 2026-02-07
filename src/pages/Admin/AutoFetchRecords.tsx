@@ -470,16 +470,16 @@ const DataEntryLedger: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 p-8 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 lg:grid-cols-4 gap-4">
               <div className="relative lg:col-span-2">
                 <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                <input type="text" id="af-search-query" placeholder="Quick Search ID, Name, Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+                <input type="text" id="af-search-query" placeholder="Quick Search ID, Name, Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32] shadow-inner transition-all" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
               </div>
-              <select id="af-filter-status" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+              <select id="af-filter-status" className="px-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:text-white font-bold text-xs outline-none focus:border-[#2E7D32] transition-all" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
                 <option value="all">All Lifecycles</option>
                 <option value="fresh">Fresh Leads</option>
                 <option value="renewal-due">Renewal Due</option>
                 <option value="renewed">Renewed Cases</option>
                 <option value="missed">Missed Cases</option>
               </select>
-              <select id="af-filter-aggregator" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
+              <select id="af-filter-aggregator" className="px-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:text-white font-bold text-xs outline-none focus:border-[#2E7D32] transition-all" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
                 <option value="all">All Aggregators</option>
                 {WEB_AGGREGATORS.map(a => <option key={a} value={a}>{a}</option>)}
               </select>

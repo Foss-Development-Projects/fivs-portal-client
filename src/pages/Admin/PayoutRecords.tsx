@@ -394,7 +394,7 @@ const AdminPayoutRecords: React.FC = () => {
               />
 
               {/* 2. Commission Type */}
-              <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border-2 border-gray-50 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
+              <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">2. Commission Type</label>
                 <select id="payout-comm-type" name="commissionOn" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.commissionOn} onChange={e => setEditingRecord({ ...editingRecord, commissionOn: e.target.value as any })}>
                   <option value="Net">Net Premium</option>
@@ -488,7 +488,7 @@ const AdminPayoutRecords: React.FC = () => {
                 <p className="text-3xl font-black text-green-800 dark:text-green-300 tracking-tight">₹{(editingRecord.netProfit || 0).toLocaleString()}</p>
               </div>
 
-              <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Payment Status</label>
                 <select id="payout-payment-status" name="paymentReceived" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.paymentReceived} onChange={e => setEditingRecord({ ...editingRecord, paymentReceived: e.target.value as any })}>
                   <option value="Yes">Received</option>
@@ -496,7 +496,7 @@ const AdminPayoutRecords: React.FC = () => {
                 </select>
               </div>
 
-              <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Remarks</label>
                 <select id="payout-remarks" name="remarks" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.remarks} onChange={e => setEditingRecord({ ...editingRecord, remarks: e.target.value as any })}>
                   <option value="New">New Business</option>
@@ -602,19 +602,19 @@ const AdminPayoutRecords: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 p-8 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-700 grid grid-cols-1 lg:grid-cols-6 gap-4">
         <div className="relative lg:col-span-2">
           <span className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-          <input type="text" id="ledger-search" name="searchQuery" placeholder="Search Customer, ID or Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32]" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <input type="text" id="ledger-search" name="searchQuery" placeholder="Search Customer, ID or Vehicle..." className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-[#2E7D32] shadow-inner transition-all" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
-        <select id="ledger-filter-policy" name="filterPolicyType" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterPolicyType} onChange={e => setFilterPolicyType(e.target.value)}>
+        <select id="ledger-filter-policy" name="filterPolicyType" className="px-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:text-white font-bold text-xs outline-none focus:border-[#2E7D32] transition-all" value={filterPolicyType} onChange={e => setFilterPolicyType(e.target.value)}>
           <option value="all">All Policies</option>
           <option value="TP">TP Only</option>
           <option value="OD">OD Only</option>
           <option value="COMPREHENSIVE">COMPREHENSIVE</option>
         </select>
-        <select id="ledger-filter-aggregator" name="filterAggregator" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs lg:col-span-2" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
+        <select id="ledger-filter-aggregator" name="filterAggregator" className="px-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:text-white font-bold text-xs lg:col-span-2 outline-none focus:border-[#2E7D32] transition-all" value={filterAggregator} onChange={e => setFilterAggregator(e.target.value)}>
           <option value="all">All Aggregators</option>
           {WEB_AGGREGATORS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
-        <select id="ledger-filter-status" name="filterStatus" className="px-4 py-4 rounded-2xl border-2 border-gray-50 dark:bg-gray-700 dark:text-white font-bold text-xs" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+        <select id="ledger-filter-status" name="filterStatus" className="px-4 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50/50 dark:bg-gray-700 dark:text-white font-bold text-xs outline-none focus:border-[#2E7D32] transition-all" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
           <option value="all">All Status</option>
           <option value="received">Received</option>
           <option value="pending">Pending</option>
@@ -734,7 +734,7 @@ const StatBox = ({ label, value, color, bg, icon }: any) => (
 );
 
 const SmartEditInput = ({ label, value, onChange, type = "text", className = "", id, name }: any) => (
-  <div className={`p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-50 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] ${className}`}>
+  <div className={`p-4 bg-gray-50/50 dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] ${className}`}>
     <label className="block text-[8px] font-black uppercase text-gray-400 mb-1" htmlFor={id}>{label}</label>
     <input id={id} name={name || id} type={type} className="w-full bg-transparent outline-none font-bold text-sm dark:text-white" value={value === 0 ? '' : (value ?? '')} onChange={e => onChange(e.target.value)} />
   </div>

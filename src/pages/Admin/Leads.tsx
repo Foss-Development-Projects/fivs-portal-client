@@ -373,7 +373,7 @@ const AdminLeads: React.FC = () => {
                           id="admin-chat-input"
                           name="chatMessage"
                           placeholder="Ask partner for details..."
-                          className="flex-1 px-4 py-2 text-sm border dark:bg-gray-800 dark:border-gray-700 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-[#2E7D32]"
+                          className="flex-1 px-4 py-3 text-sm bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 dark:text-white rounded-xl outline-none focus:border-[#2E7D32] transition-all focus:ring-4 focus:ring-green-500/5 shadow-inner"
                           value={chatMessage}
                           onChange={(e) => setChatMessage(e.target.value)}
                           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}

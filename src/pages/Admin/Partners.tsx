@@ -61,7 +61,7 @@ const AdminPartners: React.FC = () => {
               id="partner-filter-input"
               name="partnerFilter"
               placeholder="Filter by name or UID..."
-              className="pl-12 pr-4 py-3 border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-2xl outline-none focus:border-[#2E7D32] min-w-[320px] shadow-sm transition-all font-medium text-sm"
+              className="pl-12 pr-4 py-3 border-2 border-gray-200 bg-gray-100/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-2xl outline-none focus:border-[#2E7D32] min-w-[320px] shadow-inner transition-all font-bold text-sm"
             />
           </div>
         </div>

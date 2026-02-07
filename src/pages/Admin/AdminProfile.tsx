@@ -63,7 +63,7 @@ const AdminProfile: React.FC = () => {
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold shadow-inner"
                             />
                         </div>
                         <div className="space-y-2">
@@ -73,7 +73,7 @@ const AdminProfile: React.FC = () => {
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold shadow-inner"
                             />
                         </div>
                     </div>
@@ -99,7 +99,7 @@ const AdminProfile: React.FC = () => {
                                     placeholder="Leave blank to keep current"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                                    className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold shadow-inner"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -108,7 +108,7 @@ const AdminProfile: React.FC = () => {
                                     type="password"
                                     value={formData.confirmPassword}
                                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                    className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                                    className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold shadow-inner"
                                 />
                             </div>
                         </div>
