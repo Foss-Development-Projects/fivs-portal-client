@@ -408,10 +408,13 @@ const AdminPayoutRecords: React.FC = () => {
               {/* 3. Conditional Inputs based on Type */}
               {editingRecord.commissionOn === 'ONLINE POINTS' ? (
                 <div className="col-span-full bg-purple-50/20 p-6 rounded-3xl border border-purple-100 border-dashed">
-                  <SmartEditInput label="3. Points Value" id="edit-payout-points" name="points" value={editingRecord.points} onChange={v => setEditingRecord({ ...editingRecord, points: Number(v) })} type="number" />
+                  <SmartEditInput label="3. Online Points" id="edit-payout-points" name="points" value={editingRecord.points} onChange={v => setEditingRecord({ ...editingRecord, points: Number(v) })} type="number" />
                 </div>
               ) : editingRecord.commissionOn === 'OD+TP' ? (
                 <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-50/20 dark:bg-blue-900/10 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30">
+                  <div className="col-span-full">
+                    <label className="text-[10px] font-black uppercase text-blue-600 mb-4 block">3. OD + TP Split</label>
+                  </div>
                   <div className="space-y-4">
                     <SmartEditInput label="OD Premium" id="edit-payout-od-premium" name="odPremium" value={editingRecord.odPremium} onChange={v => setEditingRecord({ ...editingRecord, odPremium: Number(v) })} type="number" />
                     <SmartEditInput label="OD Commission (%)" id="edit-payout-od-percent" name="odPercentage" value={editingRecord.odPercentage} onChange={v => setEditingRecord({ ...editingRecord, odPercentage: Number(v) })} type="number" />
@@ -425,7 +428,7 @@ const AdminPayoutRecords: React.FC = () => {
                 <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Dynamic Label for Box 3 */}
                   <SmartEditInput
-                    label={`3. ${editingRecord.commissionOn === 'Net' ? 'Net Premium' : editingRecord.commissionOn === 'OD' ? 'OD Premium' : 'TP Premium'}`}
+                    label={`3. ${editingRecord.commissionOn === 'Net' ? 'Net Premium' : editingRecord.commissionOn === 'OD' ? 'Only OD' : 'Only TP'}`}
                     id="edit-payout-base-premium"
                     name="basePremium"
                     value={
