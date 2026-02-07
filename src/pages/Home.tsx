@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { UserRole, UserStatus } from '@/types';
 import { CONTACT_INFO } from '@/constants';
 import { useGlobalState } from '@/context';
-import { portalApi as api } from '@/services/portalApi';
+import { portalApi as api } from '@/services/api.service';
 
 interface HomeProps {
   onLogin: (role: UserRole) => void;
@@ -195,7 +195,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                           id="auth-name"
                           name="name"
                           required
-                          className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
+                          className="w-full px-5 py-4 rounded-2xl bg-gray-50/30 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                           placeholder="Enter your name"
                           value={formData.name}
                           onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -210,7 +210,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                         id="auth-email"
                         name="email"
                         required
-                        className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
+                        className="w-full px-5 py-4 rounded-2xl bg-gray-50/30 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                         placeholder="email@example.com"
                         value={formData.email}
                         onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -225,7 +225,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                           id="auth-mobile"
                           name="mobile"
                           required
-                          className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
+                          className="w-full px-5 py-4 rounded-2xl bg-gray-50/30 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                           placeholder="9876543210"
                           value={formData.mobile}
                           onChange={e => setFormData({ ...formData, mobile: e.target.value })}
@@ -240,7 +240,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                         id="auth-password"
                         name="password"
                         required
-                        className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
+                        className="w-full px-5 py-4 rounded-2xl bg-gray-50/30 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-300 text-sm md:text-base font-medium"
                         placeholder="••••••••"
                         value={formData.password}
                         onChange={e => setFormData({ ...formData, password: e.target.value })}

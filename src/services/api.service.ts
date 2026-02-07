@@ -11,16 +11,12 @@ import { createWorker } from 'tesseract.js';
 
 // Hybrid API Caller
 const ROOT_URL = import.meta.env.VITE_ROOT_URL || '';
-console.log('[API] Environment Variables:', import.meta.env);
-console.log('[API] Detected ROOT_URL:', ROOT_URL);
 
 const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
     const token = localStorage.getItem('fivs_auth_token');
     const headers: any = {};
     const isFormData = body instanceof FormData || (body && typeof body.append === 'function');
-
-    console.log(`[API] ${method} ${path}`, { isFormData, bodyType: typeof body });
 
     if (!isFormData) {
       headers['Content-Type'] = 'application/json';
@@ -32,7 +28,6 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
 
     // 1. Attempt Network Call
     const fetchUrl = `${ROOT_URL}/api/${path}`;
-    console.log(`[API] Fetching: ${fetchUrl}`, { ROOT_URL });
     const response = await fetch(fetchUrl, {
       method,
       headers,
@@ -158,16 +153,13 @@ export const portalApi = {
   },
 
   validateApiKey: async (key: string): Promise<boolean> => {
-    console.warn("AI System Disabled");
     return true;
   },
 
   extractDocumentData: async (dataUrl: string, type: string): Promise<any> => {
-    console.log(`Starting OCR for ${type}...`);
     try {
       const worker = await createWorker('eng');
       const ret = await worker.recognize(dataUrl);
-      console.log('OCR Result:', ret.data.text);
       await worker.terminate();
 
       const text = ret.data.text;

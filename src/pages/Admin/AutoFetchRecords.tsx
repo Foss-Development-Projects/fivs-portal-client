@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useGlobalState } from '@/context';
 import { AutoFetchRecord, ContactPerson, AdminPayoutRecord } from '@/types';
-import { portalApi as api } from '@/services/portalApi';
+import { portalApi as api } from '@/services/api.service';
 import { clearPagePersistence } from '@/utils/formPersistence';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES, RELATIONS_LIST } from '@/constants';
 
@@ -1141,14 +1141,14 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
 };
 
 const SmartInput = ({ id, label, value, onChange, type = "text", required = false, className = "" }: any) => (
-  <div className={`p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] focus-within:ring-4 focus-within:ring-green-500/5 ${className}`}>
+  <div className={`p-4 bg-gray-50/50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] focus-within:ring-4 focus-within:ring-green-500/5 ${className}`}>
     <label className="block text-[8px] font-black uppercase text-gray-400 mb-1">{label} {required && '*'}</label>
     <input id={id} type={type} className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={value || ''} onChange={e => onChange(e.target.value)} />
   </div>
 );
 
 const SmartTextArea = ({ id, label, value, onChange, className = "" }: any) => (
-  <div className={`p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] focus-within:ring-4 focus-within:ring-green-500/5 ${className}`}>
+  <div className={`p-4 bg-gray-50/50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32] focus-within:ring-4 focus-within:ring-green-500/5 ${className}`}>
     <label className="block text-[8px] font-black uppercase text-gray-400 mb-1">{label}</label>
     <textarea id={id} rows={3} className="w-full bg-transparent outline-none font-bold text-xs dark:text-white resize-none" value={value || ''} onChange={e => onChange(e.target.value)} />
   </div>

@@ -87,7 +87,7 @@ const PartnerDashboard: React.FC<{ user: User }> = ({ user }) => {
             <div className="flex items-center">
               <span className="material-icons-outlined text-orange-500 mr-3">verified</span>
               <p className="text-xs md:text-sm text-orange-800 font-bold uppercase tracking-tight">
-                Action Required: Your KYC status is <span className="underline">{user.kycStatus.replace('_', ' ')}</span>.
+                Action Required: Your KYC status is <span className="underline">{user.kycStatus === KYCStatus.NOT_SUBMITTED ? 'N/A' : user.kycStatus.replace('_', ' ')}</span>.
               </p>
             </div>
             <button onClick={() => setDismissedKyc(true)} className="p-1 hover:bg-orange-100 rounded-full transition-colors text-orange-600">
@@ -142,7 +142,7 @@ const PartnerDashboard: React.FC<{ user: User }> = ({ user }) => {
         <StatCard icon="assignment" label="Submissions" value={partnerLeads.length} color="bg-blue-500" />
         <StatCard icon="paid" label="Earnings" value={`₹${earnings.toLocaleString()}`} color="bg-green-500" />
         <StatCard icon="auto_graph" label="Conversions" value={conversions} color="bg-purple-500" />
-        <StatCard icon="verified_user" label="KYC Status" value={user.kycStatus.replace('_', ' ')} color="bg-orange-500" />
+        <StatCard icon="verified_user" label="KYC Status" value={user.kycStatus === KYCStatus.NOT_SUBMITTED ? 'N/A' : user.kycStatus.replace('_', ' ')} color="bg-orange-500" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

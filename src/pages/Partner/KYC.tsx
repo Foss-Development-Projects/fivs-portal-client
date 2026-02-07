@@ -209,7 +209,7 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                       id="kyc-account-holder"
                       name="accountHolder"
                       disabled={isLocked}
-                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
+                      className="w-full px-6 py-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       value={bankDetails.accountHolder}
                       onChange={e => setBankDetails({ ...bankDetails, accountHolder: e.target.value })}
                     />
@@ -221,7 +221,7 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                       id="kyc-account-number"
                       name="accountNumber"
                       disabled={isLocked}
-                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
+                      className="w-full px-6 py-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="0000 0000 0000"
                       value={bankDetails.accountNumber}
                       onChange={e => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
@@ -234,7 +234,7 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                       id="kyc-ifsc-code"
                       name="ifscCode"
                       disabled={isLocked}
-                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
+                      className="w-full px-6 py-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="SBIN0000..."
                       value={bankDetails.ifscCode}
                       onChange={e => setBankDetails({ ...bankDetails, ifscCode: e.target.value })}
@@ -247,7 +247,7 @@ const PartnerKYC: React.FC<{ user: User }> = ({ user }) => {
                       id="kyc-bank-name"
                       name="bankName"
                       disabled={isLocked}
-                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#2E7D32] outline-none transition-all font-bold"
+                      className="w-full px-6 py-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-[#2E7D32] outline-none transition-all font-bold"
                       placeholder="State Bank of India"
                       value={bankDetails.bankName}
                       onChange={e => setBankDetails({ ...bankDetails, bankName: e.target.value })}

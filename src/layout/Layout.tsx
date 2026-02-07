@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { User, UserRole, KYCStatus } from '@/types';
 import { useGlobalState } from '@/context';
-import { portalApi as api } from '@/services/portalApi';
+import { portalApi as api } from '@/services/api.service';
 
 interface LayoutProps {
   user: User;

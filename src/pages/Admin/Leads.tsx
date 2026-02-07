@@ -411,21 +411,21 @@ const AdminLeads: React.FC = () => {
                       <div className="space-y-4">
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Aggregator</label>
-                          <select id="issue-aggregator" name="aggregator" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.aggregator} onChange={e => setIssueData({ ...issueData, aggregator: e.target.value })}>
+                          <select id="issue-aggregator" name="aggregator" className="w-full px-5 py-3 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 dark:text-white outline-none font-bold text-sm focus:border-[#2E7D32] transition-all" value={issueData.aggregator} onChange={e => setIssueData({ ...issueData, aggregator: e.target.value })}>
                             <option value="">-- Select Aggregator --</option>
                             {WEB_AGGREGATORS.map(a => <option key={a} value={a}>{a}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Insurance Company</label>
-                          <select id="issue-insurance-company" name="insuranceCompany" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.insuranceCompany} onChange={e => setIssueData({ ...issueData, insuranceCompany: e.target.value })}>
+                          <select id="issue-insurance-company" name="insuranceCompany" className="w-full px-5 py-3 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 dark:text-white outline-none font-bold text-sm focus:border-[#2E7D32] transition-all" value={issueData.insuranceCompany} onChange={e => setIssueData({ ...issueData, insuranceCompany: e.target.value })}>
                             <option value="">-- Select Company --</option>
                             {INSURANCE_COMPANIES.map(c => <option key={c} value={c}>{c}</option>)}
                           </select>
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Edit Policy Type</label>
-                          <select id="issue-policy-type" name="policyType" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none font-bold text-sm" value={issueData.policyType} onChange={e => setIssueData({ ...issueData, policyType: e.target.value })}>
+                          <select id="issue-policy-type" name="policyType" className="w-full px-5 py-3 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 dark:text-white outline-none font-bold text-sm focus:border-[#2E7D32] transition-all" value={issueData.policyType} onChange={e => setIssueData({ ...issueData, policyType: e.target.value })}>
                             <option value="TP">TP</option>
                             <option value="OD">OD</option>
                             <option value="Comprehensive">Comprehensive</option>
@@ -435,7 +435,7 @@ const AdminLeads: React.FC = () => {
 
                       <div className="border-t dark:border-gray-700 pt-6">
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Policy Copy URL</label>
-                        <input type="url" id="issue-policy-url" name="policyUrl" className="w-full px-5 py-3 rounded-2xl border-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none" placeholder="https://..." value={issueData.policyUrl} onChange={e => setIssueData({ ...issueData, policyUrl: e.target.value })} />
+                        <input type="url" id="issue-policy-url" name="policyUrl" className="w-full px-5 py-3 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all" placeholder="https://..." value={issueData.policyUrl} onChange={e => setIssueData({ ...issueData, policyUrl: e.target.value })} />
                       </div>
 
                       <div>
@@ -445,7 +445,7 @@ const AdminLeads: React.FC = () => {
                           id="issue-renewal-date"
                           name="renewalDate"
                           required
-                          className="w-full px-5 py-3 rounded-2xl border-2 border-red-100 dark:bg-gray-800 dark:border-red-900/50 dark:text-white focus:border-red-500 outline-none"
+                          className="w-full px-5 py-3 rounded-2xl bg-gray-50/50 dark:bg-gray-800 border-2 border-red-200 dark:border-red-900/50 dark:text-white focus:border-red-500 outline-none transition-all"
                           value={issueData.renewalDate}
                           onChange={e => setIssueData({ ...issueData, renewalDate: e.target.value })}
                         />

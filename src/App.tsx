@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-
 import { User, UserRole, UserStatus, KYCStatus, Lead, LeadStatus, Transaction, Notification, Ticket, Banner, PayoutReport, ProfitReport, AutoFetchRecord, AdminPayoutRecord } from './types';
 import { Layout } from './layout/Layout';
 import { StateContext } from './context';
-import { portalApi as api } from '@/services/portalApi';
+import { portalApi as api } from '@/services/api.service';
 import Home from './pages/Home';
 import PartnerDashboard from './pages/Partner/Dashboard';
 import PartnerKYC from './pages/Partner/KYC';
@@ -83,7 +83,6 @@ const App: React.FC = () => {
 
       if (currentTime - loginTime > sessionDuration) {
         // Session expired
-        console.log("Session expired. Logging out.");
         logout();
       } else {
         try {
@@ -121,7 +120,6 @@ const App: React.FC = () => {
         const sessionDuration = 24 * 60 * 60 * 1000;
 
         if (currentTime - loginTime > sessionDuration) {
-          console.log("Session expired during active state. Logging out.");
           logout();
         }
       }
@@ -193,7 +191,6 @@ const App: React.FC = () => {
 
       setError(null);
     } catch (err: any) {
-      console.debug("Background sync idle:", err.message);
       if (isInitial && users.length === 0) {
         setError(`Connectivity Issue: ${err.message}`);
       }
