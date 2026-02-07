@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@quicktoolsone/pdf-compress": "^2.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",
     "nanoid": "^5.1.6",
