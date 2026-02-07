@@ -10,7 +10,7 @@ import { createWorker } from 'tesseract.js';
 // const rootURL = 'http://localhost:3000';
 
 // Hybrid API Caller
-const ROOT_URL = import.meta.env.VITE_ROOT_URL || '';
+export const ROOT_URL = import.meta.env.VITE_ROOT_URL || '';
 
 const callApi = async (path: string, method = 'GET', body?: any) => {
   try {
@@ -194,7 +194,7 @@ export const portalApi = {
         const engineMatch = text.match(/Engine\s*No\.?\s*[:\-\.]?\s*([A-Z0-9]+)/i);
         if (engineMatch) result.engineNo = engineMatch[1];
 
-        const nameMatch = text.match(/Name\s*[:\-\.]?\s*([A-Za-z\s\.]+)/i);
+        const nameMatch = text.match(/Name\s*[:\-\.]?\s*([A-Za-z\s\.]+)(?:\r?\n|$)/i);
         if (nameMatch) result.ownerName = nameMatch[1].trim();
       } else if (type === 'policy') {
         const policyMatch = text.match(/(?:Policy\s*No\.?|Pol\s*No\.?)\s*[:\-\.]?\s*([A-Z0-9\-\/]+)/i);

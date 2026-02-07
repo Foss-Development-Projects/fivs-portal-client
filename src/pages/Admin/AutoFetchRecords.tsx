@@ -2,9 +2,12 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useGlobalState } from '@/context';
 import { AutoFetchRecord, ContactPerson, AdminPayoutRecord } from '@/types';
-import { portalApi as api } from '@/services/api.service';
+import { portalApi as api, ROOT_URL } from '@/services/api.service';
 import { clearPagePersistence } from '@/utils/formPersistence';
 import { WEB_AGGREGATORS, INSURANCE_COMPANIES, RELATIONS_LIST } from '@/constants';
+import { customAlphabet } from 'nanoid';
+
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 16);
 
 // Data Entry Ledger Component
 const DataEntryLedger: React.FC = () => {
@@ -53,13 +56,6 @@ const DataEntryLedger: React.FC = () => {
   const [fileObjects, setFileObjects] = useState<Record<string, File>>({});
 
   const [formData, setFormData] = useState<Partial<AutoFetchRecord>>(initialRecord);
-
-  const generateLeadId = useCallback((name?: string, aadhaar?: string) => {
-    if (!name || !aadhaar || aadhaar.length < 4) return `ENTRY-${Date.now()}`;
-    const cleanName = name.toUpperCase().replace(/[^A-Z]/g, '');
-    const last4 = aadhaar.slice(-4);
-    return `${cleanName}${last4}`;
-  }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'policy' | 'endorsement' | 'rc' | 'rcBack' | 'pan' | 'aadhaar' | 'aadhaarBack' | 'voterFront' | 'voterBack') => {
     const file = e.target.files?.[0];
@@ -138,7 +134,8 @@ const DataEntryLedger: React.FC = () => {
   const handleFinalSubmit = async () => {
     try {
       setIsProcessing(true);
-      const id = formData.id || generateLeadId(formData.ownerName, formData.aadhaarNo);
+      const id = formData.id;
+      if (!id) throw new Error("Critical: Missing Entry ID");
       const now = new Date();
 
       // Prepare Final Record Object (Data Part)
@@ -386,7 +383,7 @@ const DataEntryLedger: React.FC = () => {
                     onMouseLeave={() => setIsDragging(false)}
                   >
                     <img
-                      src={zoomedImage}
+                      src={getDocUrl(zoomedImage || '')}
                       className="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-2xl border-4 border-white/10 transition-transform duration-75 relative z-10"
                       style={{ transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px) rotate(${rotation}deg)` }}
                       alt="Zoomed View"
@@ -461,7 +458,7 @@ const DataEntryLedger: React.FC = () => {
           <button onClick={() => setShowCsvDialog(true)} className="bg-blue-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-blue-700 transition-all flex items-center border-none">
             <span className="material-icons-outlined mr-2">analytics</span> Export Report
           </button>
-          <button onClick={() => { setFormData(initialRecord); setActiveView('wizard'); setCurrentStep(1); setErrorMessage(null); }} className="bg-[#2E7D32] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-[#1b5e20] transition-all flex items-center">
+          <button onClick={() => { setFormData({ ...initialRecord, id: nanoid() }); setActiveView('wizard'); setCurrentStep(1); setErrorMessage(null); }} className="bg-[#2E7D32] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-[#1b5e20] transition-all flex items-center">
             <span className="material-icons-outlined mr-2">keyboard</span> New Data Entry
           </button>
         </div>
@@ -597,6 +594,7 @@ const DataEntryLedger: React.FC = () => {
                       label="Upload Insurance Policy Copy"
                       subtext="Multi-page PDFs supported. System will scan all pages."
                       file={formData.documents?.policyCopy}
+                      fileType={fileObjects.policyCopy?.type}
                       onUpload={e => handleFileUpload(e, 'policy')}
                       onPreview={() => setZoomedImage(formData.documents?.policyCopy || null)}
                       processing={isProcessing}
@@ -635,6 +633,7 @@ const DataEntryLedger: React.FC = () => {
                       label="Upload Policy Endorsement Copy"
                       subtext="Optional. Upload if there are endorsement details."
                       file={formData.documents?.endorsementCopy}
+                      fileType={fileObjects.endorsementCopy?.type}
                       onUpload={e => handleFileUpload(e, 'endorsement')}
                       onPreview={() => setZoomedImage(formData.documents?.endorsementCopy || null)}
                       processing={isProcessing}
@@ -661,6 +660,7 @@ const DataEntryLedger: React.FC = () => {
                         label="RC Front"
                         subtext="Front side."
                         file={formData.documents?.rcFront}
+                        fileType={fileObjects.rcFront?.type}
                         onUpload={e => handleFileUpload(e, 'rc')}
                         onPreview={() => setZoomedImage(formData.documents?.rcFront || null)}
                         processing={isProcessing}
@@ -673,6 +673,7 @@ const DataEntryLedger: React.FC = () => {
                         label="RC Back"
                         subtext="Back side."
                         file={formData.documents?.rcBack}
+                        fileType={fileObjects.rcBack?.type}
                         onUpload={e => handleFileUpload(e, 'rcBack')}
                         onPreview={() => setZoomedImage(formData.documents?.rcBack || null)}
                         processing={isProcessing}
@@ -706,6 +707,7 @@ const DataEntryLedger: React.FC = () => {
                       label="Upload Owner's PAN Card"
                       subtext="Used for KYC and income verification."
                       file={formData.documents?.panCard}
+                      fileType={fileObjects.panCard?.type}
                       onUpload={e => handleFileUpload(e, 'pan')}
                       onPreview={() => setZoomedImage(formData.documents?.panCard || null)}
                       processing={isProcessing}
@@ -739,6 +741,7 @@ const DataEntryLedger: React.FC = () => {
                         label="Aadhaar Front"
                         subtext="Front side with photo."
                         file={formData.documents?.aadhaarCard}
+                        fileType={fileObjects.aadhaarCard?.type}
                         onUpload={e => handleFileUpload(e, 'aadhaar')}
                         onPreview={() => setZoomedImage(formData.documents?.aadhaarCard || null)}
                         processing={isProcessing}
@@ -751,6 +754,7 @@ const DataEntryLedger: React.FC = () => {
                         label="Aadhaar Back"
                         subtext="Back side with address."
                         file={formData.documents?.aadhaarBack}
+                        fileType={fileObjects.aadhaarBack?.type}
                         onUpload={e => handleFileUpload(e, 'aadhaarBack')}
                         onPreview={() => setZoomedImage(formData.documents?.aadhaarBack || null)}
                         processing={isProcessing}
@@ -767,7 +771,7 @@ const DataEntryLedger: React.FC = () => {
                         <SmartInput id="af-aadhaar-no" label="Aadhaar Number" value={formData.aadhaarNo} onChange={v => setFormData(prev => ({ ...prev, aadhaarNo: v }))} />
                         <div className="p-4 bg-[#2E7D32] text-white rounded-2xl flex flex-col justify-center">
                           <p className="text-[8px] font-black uppercase opacity-60">System Lead ID</p>
-                          <p className="text-sm font-black tracking-tight">{generateLeadId(formData.ownerName, formData.aadhaarNo) || 'AWAITING DATA'}</p>
+                          <p className="text-sm font-black tracking-tight break-all">{formData.id || 'AWAITING DATA'}</p>
                         </div>
                       </div>
                       <div className="flex justify-between items-center pt-4">
@@ -787,6 +791,7 @@ const DataEntryLedger: React.FC = () => {
                         label="Voter Front"
                         subtext="Optional ID."
                         file={formData.documents?.voterFront}
+                        fileType={fileObjects.voterFront?.type}
                         onUpload={e => handleFileUpload(e, 'voterFront')}
                         onPreview={() => setZoomedImage(formData.documents?.voterFront || null)}
                         processing={isProcessing}
@@ -799,6 +804,7 @@ const DataEntryLedger: React.FC = () => {
                         label="Voter Back"
                         subtext="Optional Address."
                         file={formData.documents?.voterBack}
+                        fileType={fileObjects.voterBack?.type}
                         onUpload={e => handleFileUpload(e, 'voterBack')}
                         onPreview={() => setZoomedImage(formData.documents?.voterBack || null)}
                         processing={isProcessing}
@@ -1033,7 +1039,7 @@ const DataEntryLedger: React.FC = () => {
                 <h4 className="text-xs font-black text-[#2E7D32] uppercase tracking-widest border-b pb-2 mb-4">Attached Documents</h4>
                 <div className="flex flex-wrap gap-4">
                   {Object.entries(selectedRecord.documents || {}).map(([key, url]) => (
-                    <a key={key} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/30 dark:hover:text-green-400 transition-colors group">
+                    <a key={key} href={getDocUrl(url)} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/30 dark:hover:text-green-400 transition-colors group">
                       <span className="material-icons-outlined text-gray-400 group-hover:text-green-600">description</span>
                       <div>
                         <div className="text-[10px] font-black uppercase text-gray-500 group-hover:text-green-700">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
@@ -1054,7 +1060,7 @@ const DataEntryLedger: React.FC = () => {
   );
 };
 
-const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onPreview, onSkip, onBack }: any) => {
+const WizardUpload = ({ label, subtext, file, fileType, onUpload, processing, onReset, onPreview, onSkip, onBack }: any) => {
   const handleDownload = () => {
     if (!file) return;
     const link = document.createElement('a');
@@ -1064,6 +1070,9 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
     link.click();
     document.body.removeChild(link);
   };
+
+  const isImage = (fileType?.startsWith('image/')) || (file && (file.startsWith('data:image') || /\.(jpg|jpeg|png|webp|avif|gif)(\?.*)?$/i.test(file)));
+  const isPdf = (fileType === 'application/pdf') || (file && (file.startsWith('data:application/pdf') || file.toLowerCase().includes('.pdf')));
 
   return (
     <div className={`relative group p-10 rounded-[3rem] border-2 border-dashed flex flex-col items-center justify-center transition-all min-h-[300px] text-center ${file ? 'border-green-500 bg-green-50/20' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900'}`}>
@@ -1092,11 +1101,11 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
 
       {file ? (
         <div className="animate-scaleIn flex flex-col items-center w-full">
-          {(file.startsWith('data:image') || /\.(jpg|jpeg|png|webp|avif|gif)(\?.*)?$/i.test(file)) ? (
-            <div onClick={onPreview} className="w-48 h-48 rounded-2xl overflow-hidden mb-4 border-4 border-white shadow-xl cursor-zoom-in group-hover:scale-105 transition-transform">
-              <img src={file} className="w-full h-full object-cover" />
+          {isImage ? (
+            <div onClick={onPreview} className="w-48 h-48 rounded-2xl overflow-hidden mb-4 border-4 border-white shadow-xl cursor-zoom-in group-hover:scale-105 transition-transform bg-gray-50/50 dark:bg-gray-900/50">
+              <img src={getDocUrl(file)} className="w-full h-full object-contain" />
             </div>
-          ) : (file.startsWith('data:application/pdf') || file.toLowerCase().includes('.pdf')) ? (
+          ) : isPdf ? (
             <div onClick={onPreview} className="w-48 h-64 rounded-2xl overflow-hidden mb-4 border-4 border-white shadow-xl cursor-zoom-in group-hover:scale-105 transition-transform relative bg-gray-50 flex flex-col items-center justify-center p-6 border border-gray-100">
               <span className="material-icons-outlined text-red-500 text-6xl mb-4 animate-pulse">picture_as_pdf</span>
               <p className="text-[10px] font-black uppercase text-gray-800 tracking-wider">PDF Ready</p>
@@ -1113,7 +1122,7 @@ const WizardUpload = ({ label, subtext, file, onUpload, processing, onReset, onP
           <h4 className="text-xl font-black text-green-800 uppercase tracking-widest">{label} Active</h4>
           <div className="flex flex-wrap gap-3 mt-6 justify-center">
             <button onClick={onPreview} className="px-5 py-2 bg-green-600 rounded-xl text-[10px] font-black text-white hover:bg-green-700 transition-colors uppercase tracking-widest flex items-center">
-              <span className="material-icons-outlined text-xs mr-1">visibility</span> View Previous
+              <span className="material-icons-outlined text-xs mr-1">visibility</span> Preview
             </button>
             <button onClick={handleDownload} className="px-5 py-2 bg-blue-600 rounded-xl text-[10px] font-black text-white hover:bg-blue-700 transition-colors uppercase tracking-widest flex items-center">
               <span className="material-icons-outlined text-xs mr-1">file_download</span> Download
@@ -1160,5 +1169,12 @@ const DetailRow = ({ label, value }: { label: string, value?: string }) => (
     <span className="text-sm font-bold text-gray-800 dark:text-white break-words">{value || '-'}</span>
   </div>
 );
+
+const getDocUrl = (url?: string) => {
+  if (!url) return '';
+  if (url.startsWith('blob:') || url.startsWith('data:') || url.startsWith('http')) return url;
+  if (url.startsWith('/api/uploads')) return `${ROOT_URL}${url}`;
+  return url;
+};
 
 export default DataEntryLedger;
