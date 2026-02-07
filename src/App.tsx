@@ -55,6 +55,7 @@ const App: React.FC = () => {
   const [autoFetchRecords, setAutoFetchRecords] = useState<AutoFetchRecord[]>([]);
   const [adminPayoutRecords, setAdminPayoutRecords] = useState<AdminPayoutRecord[]>([]);
   const [alert, setAlert] = useState<{ title: string, message: string, type: 'success' | 'warning' | 'error' | 'info', onConfirm?: () => void } | null>(null);
+  const [toast, setToast] = useState<{ message: string, type: 'success' | 'warning' | 'error' | 'info' } | null>(null);
 
   const showAlert = useCallback((title: string, message: string, type: 'success' | 'warning' | 'error' | 'info' = 'info') => {
     setAlert({ title, message, type });
@@ -62,6 +63,13 @@ const App: React.FC = () => {
 
   const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, type: 'warning' | 'error' | 'info' = 'warning') => {
     setAlert({ title, message, type, onConfirm });
+  }, []);
+
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showToast = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info' = 'success') => {
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    setToast({ message, type });
+    toastTimeoutRef.current = setTimeout(() => setToast(null), 4000);
   }, []);
 
   const logout = useCallback(() => {
@@ -259,7 +267,7 @@ const App: React.FC = () => {
       sendNotification, markNotificationAsRead,
       saveAutoFetchRecord, deleteAutoFetchRecord,
       saveAdminPayoutRecord, deleteAdminPayoutRecord,
-      showAlert, showConfirm,
+      showAlert, showConfirm, showToast,
       redemptionRequests: []
     }}>
       <div className={darkMode ? 'dark' : ''}>
@@ -335,8 +343,9 @@ const App: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          alert.onConfirm?.();
+                          const onConfirm = alert.onConfirm;
                           setAlert(null);
+                          onConfirm?.();
                         }}
                         className={`flex-[2] py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg transition-all active:scale-95 ${alert.type === 'success' ? 'bg-green-600 text-white shadow-green-200 dark:shadow-none' :
                           alert.type === 'error' ? 'bg-red-600 text-white shadow-red-200 dark:shadow-none' :
@@ -361,6 +370,23 @@ const App: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+        {/* Global Toast Notification */}
+        {toast && (
+          <div className="fixed bottom-12 right-12 z-[12000] animate-slideUp">
+            <div className={`px-8 py-5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 flex items-center gap-5 transition-all outline outline-4 outline-white/10 ${toast.type === 'success' ? 'bg-[#2E7D32] text-white border-green-400' :
+              toast.type === 'error' ? 'bg-red-600 text-white border-red-400' :
+                toast.type === 'warning' ? 'bg-orange-600 text-white border-orange-400' :
+                  'bg-blue-600 text-white border-blue-400'
+              }`}>
+              <span className="material-icons-outlined">
+                {toast.type === 'success' ? 'check_circle' :
+                  toast.type === 'error' ? 'error' :
+                    toast.type === 'warning' ? 'warning' : 'info'}
+              </span>
+              <p className="text-xs font-black uppercase tracking-widest">{toast.message}</p>
             </div>
           </div>
         )}

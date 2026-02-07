@@ -43,9 +43,10 @@ export interface GlobalState {
   saveAdminPayoutRecord: (record: AdminPayoutRecord) => Promise<void>;
   deleteAdminPayoutRecord: (id: string) => Promise<void>;
 
-  // Alert System
+  // Alert & Toast System
   showAlert: (title: string, message: string, type?: 'success' | 'warning' | 'error' | 'info') => void;
   showConfirm: (title: string, message: string, onConfirm: () => void, type?: 'warning' | 'error' | 'info') => void;
+  showToast: (message: string, type?: 'success' | 'warning' | 'error' | 'info') => void;
 }
 
 export const StateContext = createContext<GlobalState | undefined>(undefined);

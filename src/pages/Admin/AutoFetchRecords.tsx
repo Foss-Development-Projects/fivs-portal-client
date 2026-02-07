@@ -11,7 +11,7 @@ const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 16);
 
 // Data Entry Ledger Component
 const DataEntryLedger: React.FC = () => {
-  const { autoFetchRecords, saveAutoFetchRecord, deleteAutoFetchRecord, saveAdminPayoutRecord, adminPayoutRecords, showAlert, showConfirm } = useGlobalState();
+  const { autoFetchRecords, saveAutoFetchRecord, deleteAutoFetchRecord, saveAdminPayoutRecord, adminPayoutRecords, showAlert, showConfirm, showToast } = useGlobalState();
   const [activeView, setActiveView] = useState<'table' | 'wizard'>('table');
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -226,7 +226,7 @@ const DataEntryLedger: React.FC = () => {
       `Are you sure you want to permanently REMOVE record ${id}? Associated Payout Record will also be deleted.`,
       async () => {
         await deleteAutoFetchRecord(id);
-        showAlert('Record Removed', `Intelligence record ${id} and associated payout logs have been deleted successfully.`, 'success');
+        showToast(`Record ${id} removed successfully`, 'success');
       },
       'error'
     );
