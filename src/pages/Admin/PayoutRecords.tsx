@@ -390,13 +390,13 @@ const AdminPayoutRecords: React.FC = () => {
                 value={editingRecord.premiumAmount}
                 onChange={v => setEditingRecord({ ...editingRecord, premiumAmount: Number(v) })}
                 type="number"
-                className="bg-green-50/20 border-green-100"
+                className="bg-green-50/20 dark:bg-green-900/10 border-green-100 dark:border-green-900/30"
               />
 
               {/* 2. Commission Type */}
               <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">2. Commission Type</label>
-                <select id="payout-comm-type" name="commissionOn" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.commissionOn} onChange={e => setEditingRecord({ ...editingRecord, commissionOn: e.target.value as any })}>
+                <select id="payout-comm-type" name="commissionOn" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white dark:bg-gray-900" value={editingRecord.commissionOn} onChange={e => setEditingRecord({ ...editingRecord, commissionOn: e.target.value as any })}>
                   <option value="Net">Net Premium</option>
                   <option value="OD">Only OD</option>
                   <option value="TP">Only TP</option>
@@ -407,7 +407,7 @@ const AdminPayoutRecords: React.FC = () => {
 
               {/* 3. Conditional Inputs based on Type */}
               {editingRecord.commissionOn === 'ONLINE POINTS' ? (
-                <div className="col-span-full bg-purple-50/20 p-6 rounded-3xl border border-purple-100 border-dashed">
+                <div className="col-span-full bg-purple-50/20 dark:bg-purple-900/10 p-6 rounded-3xl border border-purple-100 dark:border-purple-900/30 border-dashed">
                   <SmartEditInput label="3. Online Points" id="edit-payout-points" name="points" value={editingRecord.points} onChange={v => setEditingRecord({ ...editingRecord, points: Number(v) })} type="number" />
                 </div>
               ) : editingRecord.commissionOn === 'OD+TP' ? (
@@ -462,7 +462,7 @@ const AdminPayoutRecords: React.FC = () => {
                 value={editingRecord.tdsRate !== undefined ? editingRecord.tdsRate : 2}
                 onChange={v => setEditingRecord({ ...editingRecord, tdsRate: Number(v) })}
                 type="number"
-                className="bg-yellow-50/20 border-yellow-100"
+                className="bg-yellow-50/20 dark:bg-yellow-900/10 border-yellow-100 dark:border-yellow-900/30"
               />
 
               {/* 7. TDS Deducted (Calculated) */}
@@ -478,9 +478,9 @@ const AdminPayoutRecords: React.FC = () => {
               </div>
 
               {/* 8, 9, 10. Manual Adjustments */}
-              <SmartEditInput label="8. Discount" id="edit-payout-discount" name="discount" value={editingRecord.discount} onChange={v => setEditingRecord({ ...editingRecord, discount: Number(v) })} type="number" className="border-orange-100" />
-              <SmartEditInput label="9. Broker Payment" id="edit-payout-brokerage" name="brokerPayment" value={editingRecord.brokerPayment} onChange={v => setEditingRecord({ ...editingRecord, brokerPayment: Number(v) })} type="number" className="border-purple-100" />
-              <SmartEditInput label="10. Other Expense" id="edit-payout-expense" name="otherExpense" value={editingRecord.otherExpense} onChange={v => setEditingRecord({ ...editingRecord, otherExpense: Number(v) })} type="number" className="border-gray-200" />
+              <SmartEditInput label="8. Discount" id="edit-payout-discount" name="discount" value={editingRecord.discount} onChange={v => setEditingRecord({ ...editingRecord, discount: Number(v) })} type="number" className="border-orange-100 dark:border-orange-900/30" />
+              <SmartEditInput label="9. Broker Payment" id="edit-payout-brokerage" name="brokerPayment" value={editingRecord.brokerPayment} onChange={v => setEditingRecord({ ...editingRecord, brokerPayment: Number(v) })} type="number" className="border-purple-100 dark:border-purple-900/30" />
+              <SmartEditInput label="10. Other Expense" id="edit-payout-expense" name="otherExpense" value={editingRecord.otherExpense} onChange={v => setEditingRecord({ ...editingRecord, otherExpense: Number(v) })} type="number" className="border-gray-200 dark:border-gray-700" />
 
               {/* 11. Final Profit */}
               <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl border-2 border-green-200 dark:border-green-800 col-span-full">
@@ -490,7 +490,7 @@ const AdminPayoutRecords: React.FC = () => {
 
               <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Payment Status</label>
-                <select id="payout-payment-status" name="paymentReceived" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.paymentReceived} onChange={e => setEditingRecord({ ...editingRecord, paymentReceived: e.target.value as any })}>
+                <select id="payout-payment-status" name="paymentReceived" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white dark:bg-gray-900" value={editingRecord.paymentReceived} onChange={e => setEditingRecord({ ...editingRecord, paymentReceived: e.target.value as any })}>
                   <option value="Yes">Received</option>
                   <option value="No">Pending</option>
                 </select>
@@ -498,7 +498,7 @@ const AdminPayoutRecords: React.FC = () => {
 
               <div className="p-4 bg-gray-50/50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-sm transition-all focus-within:border-[#2E7D32]">
                 <label className="text-[8px] font-black uppercase text-gray-400 block mb-1">Remarks</label>
-                <select id="payout-remarks" name="remarks" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white" value={editingRecord.remarks} onChange={e => setEditingRecord({ ...editingRecord, remarks: e.target.value as any })}>
+                <select id="payout-remarks" name="remarks" className="w-full bg-transparent outline-none font-bold text-xs dark:text-white dark:bg-gray-900" value={editingRecord.remarks} onChange={e => setEditingRecord({ ...editingRecord, remarks: e.target.value as any })}>
                   <option value="New">New Business</option>
                   <option value="Renewal">Renewal Case</option>
                 </select>

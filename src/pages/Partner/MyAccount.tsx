@@ -6,6 +6,7 @@ const MyAccount: React.FC = () => {
     const { currentUser, updateUser, showAlert } = useGlobalState();
 
     const [formData, setFormData] = useState({
+        username: currentUser?.username || '',
         name: currentUser?.name || '',
         email: currentUser?.email || '',
         mobile: currentUser?.mobile || '',
@@ -27,6 +28,7 @@ const MyAccount: React.FC = () => {
         setIsSubmitting(true);
         try {
             const updates: any = {
+                username: formData.username,
                 name: formData.name,
                 email: formData.email,
                 mobile: formData.mobile
@@ -67,6 +69,26 @@ const MyAccount: React.FC = () => {
                             />
                         </div>
                         <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Username</label>
+                            <input
+                                type="text"
+                                required
+                                value={formData.username}
+                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                            <input
+                                type="tel"
+                                required
+                                value={formData.mobile}
+                                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
                             <input
                                 type="email"
@@ -77,18 +99,6 @@ const MyAccount: React.FC = () => {
                             />
                         </div>
                     </div>
-
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
-                        <input
-                            type="tel"
-                            required
-                            value={formData.mobile}
-                            onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:border-[#2E7D32] outline-none transition-all font-bold"
-                        />
-                    </div>
-
                     <div className="pt-6 border-t dark:border-gray-700 mt-6">
                         <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6">Security Update (Optional)</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

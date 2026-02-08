@@ -101,3 +101,14 @@ input[type=number] {
     font-display: block;
     src: url('./../fonts/Inter-VariableFont_opsz\,wght.woff2') format('woff2');
 }
+
+/* Fix for dark mode autofill background */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #262626 inset !important;
+    -webkit-text-fill-color: white !important;
+    caret-color: white;
+    transition: background-color 5000s ease-in-out 0s;
+}
