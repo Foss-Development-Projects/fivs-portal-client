@@ -102,7 +102,7 @@ const DataEntryLedger: React.FC = () => {
     try {
       // Only run for relevant front-facing docs
       if (['policy', 'rc', 'pan', 'aadhaar'].includes(type as string)) {
-        const extracted = await api.extractDocumentData(blobUrl, type);
+        const extracted = await api.extractDocumentData(finalFile, type);
         if (extracted && Object.keys(extracted).length > 0) {
           setFormData(prev => ({ ...prev, ...extracted }));
           // Optional: Show success toast or small indicator

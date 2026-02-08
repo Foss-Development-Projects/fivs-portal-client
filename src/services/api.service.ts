@@ -1,6 +1,8 @@
 import { User, Lead, Transaction, PayoutReport, ProfitReport, Ticket, Banner, UserRole, UserStatus, KYCStatus, Notification, AutoFetchRecord, AdminPayoutRecord } from '@/types';
-import { createWorker } from 'tesseract.js';
-// import { GoogleGenAI } from "@google/genai";
+import * as pdfjs from 'pdfjs-dist';
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
 /**
  * Cloud API Service
@@ -156,61 +158,8 @@ export const portalApi = {
     return true;
   },
 
-  extractDocumentData: async (dataUrl: string, type: string): Promise<any> => {
-    try {
-      const worker = await createWorker('eng');
-      const ret = await worker.recognize(dataUrl);
-      await worker.terminate();
-
-      const text = ret.data.text;
-      const result: any = {};
-
-      if (type === 'pan') {
-        const panMatch = text.match(/[A-Z]{5}[0-9]{4}[A-Z]/);
-        if (panMatch) result.panNo = panMatch[0];
-
-        const dobMatch = text.match(/(\d{2}\/\d{2}\/\d{4})/);
-        if (dobMatch) {
-          const [day, month, year] = dobMatch[0].split('/');
-          result.dob = `${year}-${month}-${day}`;
-        }
-      } else if (type === 'aadhaar') {
-        // Aadhaar: 12 digits, often XXXX XXXX XXXX
-        const aadhaarMatch = text.match(/\d{4}\s\d{4}\s\d{4}/);
-        if (aadhaarMatch) result.aadhaarNo = aadhaarMatch[0];
-        else {
-          // Try continuous
-          const aadhaarCont = text.match(/\d{12}/);
-          if (aadhaarCont) result.aadhaarNo = aadhaarCont[0].replace(/(\d{4})(\d{4})(\d{4})/, "$1 $2 $3");
-        }
-      } else if (type === 'rc') {
-        // RC: Matches standard configurations
-        const regNoMatch = text.match(/[A-Z]{2}\s?[0-9]{1,2}\s?[A-Z]{1,3}\s?[0-9]{4}/);
-        if (regNoMatch) result.vehicleRegNo = regNoMatch[0].replace(/\s/g, '');
-
-        const chassisMatch = text.match(/(?:Chassis\s*No\.?|VIN)\s*[:\-\.]?\s*([A-Z0-9]+)/i);
-        if (chassisMatch) result.chassisNo = chassisMatch[1];
-
-        const engineMatch = text.match(/Engine\s*No\.?\s*[:\-\.]?\s*([A-Z0-9]+)/i);
-        if (engineMatch) result.engineNo = engineMatch[1];
-
-        const nameMatch = text.match(/Name\s*[:\-\.]?\s*([A-Za-z\s\.]+)(?:\r?\n|$)/i);
-        if (nameMatch) result.ownerName = nameMatch[1].trim();
-      } else if (type === 'policy') {
-        const policyMatch = text.match(/(?:Policy\s*No\.?|Pol\s*No\.?)\s*[:\-\.]?\s*([A-Z0-9\-\/]+)/i);
-        if (policyMatch) result.policyNo = policyMatch[1];
-
-        // Try to guess insurer
-        const insurers = ['HDFC', 'ICICI', 'Bajaj', 'Digit', 'Acko', 'TATA', 'Reliance', 'SBI', 'United', 'New India', 'Oriental'];
-        const foundInsurer = insurers.find(i => text.toLowerCase().includes(i.toLowerCase()));
-        if (foundInsurer) result.insuranceCompany = foundInsurer;
-      }
-
-      return result;
-    } catch (err) {
-      console.error("OCR Extraction Failed:", err);
-      // Fallback: return empty, allow manual entry
-      return {};
-    }
+  extractDocumentData: async (file: File | string, type: string): Promise<any> => {
+    console.log("[OCR] Client-side OCR is currently disabled.");
+    return {};
   }
 };
