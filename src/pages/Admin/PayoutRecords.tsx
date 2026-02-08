@@ -428,19 +428,19 @@ const AdminPayoutRecords: React.FC = () => {
                 <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Dynamic Label for Box 3 */}
                   <SmartEditInput
-                    label={`3. ${editingRecord.commissionOn === 'Net' ? 'Net Premium' : editingRecord.commissionOn === 'OD' ? 'Only OD' : 'Only TP'}`}
+                    label={`3. ${editingRecord.commissionOn === 'TP' ? 'Only TP' : editingRecord.commissionOn === 'OD' ? 'Only OD' : 'Net Premium'}`}
                     id="edit-payout-base-premium"
                     name="basePremium"
                     value={
-                      editingRecord.commissionOn === 'Net' ? editingRecord.netPremium :
+                      editingRecord.commissionOn === 'TP' ? editingRecord.tpPremium :
                         editingRecord.commissionOn === 'OD' ? editingRecord.odPremium :
-                          editingRecord.tpPremium
+                          editingRecord.netPremium
                     }
                     onChange={v => {
                       const val = Number(v);
-                      if (editingRecord.commissionOn === 'Net') setEditingRecord({ ...editingRecord, netPremium: val });
+                      if (editingRecord.commissionOn === 'TP') setEditingRecord({ ...editingRecord, tpPremium: val });
                       else if (editingRecord.commissionOn === 'OD') setEditingRecord({ ...editingRecord, odPremium: val });
-                      else setEditingRecord({ ...editingRecord, tpPremium: val });
+                      else setEditingRecord({ ...editingRecord, netPremium: val });
                     }}
                     type="number"
                   />
