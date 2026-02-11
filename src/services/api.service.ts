@@ -167,12 +167,5 @@ export const portalApi = {
 
   validateApiKey: async (key: string): Promise<boolean> => {
     return true;
-  },
-
-  extractDocumentData: async (file: File | string, type: string): Promise<any> => {
-    if (typeof file === 'string') return {}; // Skip if URL string
-    const formData = new FormData();
-    formData.append('file', file);
-    return await callApi(`ocr/extract/${type}`, 'POST', formData);
   }
 };
