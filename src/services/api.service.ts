@@ -45,7 +45,18 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
     }
 
     if (response.ok) {
-      return method === 'DELETE' ? null : response.json();
+      if (method === 'DELETE') return null;
+      const data = await response.json();
+
+      if (data && data._compressionLogs) {
+        console.groupCollapsed(`%c 📸 Image Compression Stats`, 'color: #2E7D32; font-weight: bold; background: #e8f5e9; padding: 2px 6px; border-radius: 4px;');
+        console.table(data._compressionLogs);
+        console.log('%c Server-side lossless compression applied via Sharp', 'color: #666; font-style: italic;');
+        console.groupEnd();
+        delete data._compressionLogs;
+      }
+
+      return data;
     }
 
     // If 404/500, throw to trigger catch block
@@ -159,7 +170,9 @@ export const portalApi = {
   },
 
   extractDocumentData: async (file: File | string, type: string): Promise<any> => {
-    console.log("[OCR] Client-side OCR is currently disabled.");
-    return {};
+    if (typeof file === 'string') return {}; // Skip if URL string
+    const formData = new FormData();
+    formData.append('file', file);
+    return await callApi(`ocr/extract/${type}`, 'POST', formData);
   }
 };

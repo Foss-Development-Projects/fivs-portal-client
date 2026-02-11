@@ -5,23 +5,8 @@ import { Layout } from './layout/Layout';
 import { StateContext } from './context';
 import { portalApi as api } from '@/services/api.service';
 import Home from './pages/Home';
-import PartnerDashboard from './pages/Partner/Dashboard';
-import PartnerKYC from './pages/Partner/KYC';
-import PartnerLeads from './pages/Partner/Leads';
-import PartnerRenewals from './pages/Partner/Renewals';
-import PartnerWallet from './pages/Partner/Wallet';
-import PartnerTickets from './pages/Partner/Tickets';
-import PartnerNotifications from './pages/Partner/Notifications';
-import PartnerMyAccount from './pages/Partner/MyAccount';
 import AdminDashboard from './pages/Admin/Dashboard';
-import AdminPartners from './pages/Admin/Partners';
-import AdminKYC from './pages/Admin/KYC';
-import AdminLeads from './pages/Admin/Leads';
-import AdminBanners from './pages/Admin/Banners';
-import AdminPayouts from './pages/Admin/Payouts';
 import AdminPayoutRecords from './pages/Admin/PayoutRecords';
-import AdminNotifications from './pages/Admin/Notifications';
-import AdminTickets from './pages/Admin/Tickets';
 import AdminAutoFetch from './pages/Admin/AutoFetchRecords';
 import AdminProfile from './pages/Admin/AdminProfile';
 import { initFormPersistence } from './utils/formPersistence';
@@ -279,30 +264,11 @@ const App: React.FC = () => {
             onLogout={logout}
           >
             <Routes>
-              {currentUser.role === UserRole.PARTNER ? (
-                <>
-                  <Route path="/overview" element={<PartnerDashboard user={currentUser} />} />
-                  <Route path="/kyc" element={<PartnerKYC user={currentUser} />} />
-                  <Route path="/leads" element={<PartnerLeads user={currentUser} />} />
-                  <Route path="/renewals" element={<PartnerRenewals user={currentUser} />} />
-                  <Route path="/wallet" element={<PartnerWallet user={currentUser} />} />
-                  <Route path="/tickets" element={<PartnerTickets user={currentUser} />} />
-                  <Route path="/notifications" element={<PartnerNotifications user={currentUser} />} />
-                  <Route path="/my-account" element={<PartnerMyAccount />} />
-                  <Route path="*" element={<Navigate to="/overview" replace />} />
-                </>
-              ) : (
+              {currentUser.role === UserRole.ADMIN && (
                 <>
                   <Route path="/overview" element={<AdminDashboard />} />
-                  <Route path="/partners" element={<AdminPartners />} />
-                  <Route path="/kyc-approval" element={<AdminKYC />} />
-                  <Route path="/all-leads" element={<AdminLeads />} />
                   <Route path="/data-entry" element={<AdminAutoFetch />} />
                   <Route path="/payout-records" element={<AdminPayoutRecords />} />
-                  <Route path="/banner-management" element={<AdminBanners />} />
-                  <Route path="/payouts" element={<AdminPayouts />} />
-                  <Route path="/admin-notifications" element={<AdminNotifications />} />
-                  <Route path="/admin-tickets" element={<AdminTickets />} />
                   <Route path="/my-account" element={<AdminProfile />} />
                   <Route path="*" element={<Navigate to="/overview" replace />} />
                 </>

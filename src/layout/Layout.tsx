@@ -98,30 +98,9 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
       : 0;
   }, [tickets, user.role]);
 
-  const dueRenewalCount = useMemo(() => {
-    if (user.role !== UserRole.PARTNER) return 0;
-    const now = new Date();
-    return leads.filter(l => {
-      if (!l.renewalDate || l.partnerId !== user.id) return false;
-      const renewalDate = new Date(l.renewalDate);
-      const diffTime = renewalDate.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays <= 30 && diffDays >= 0;
-    }).length;
-  }, [leads, user.id, user.role]);
-
-  const navItems = user.role === UserRole.PARTNER ? [
-    { id: 'overview', icon: 'dashboard', label: 'Dashboard' },
-    { id: 'kyc', icon: 'verified_user', label: 'KYC' },
-    { id: 'leads', icon: 'assignment', label: 'Leads' },
-    { id: 'renewals', icon: 'update', label: 'Renewals', badge: dueRenewalCount },
-    { id: 'wallet', icon: 'account_balance_wallet', label: 'Wallet' },
-    { id: 'tickets', icon: 'support_agent', label: 'Support' },
-    { id: 'notifications', icon: 'notifications', label: 'Alerts', badge: unreadNotifCount },
-    { id: 'my-account', icon: 'manage_accounts', label: 'My Account' },
-  ] : [
+  const navItems = [
     { id: 'overview', icon: 'analytics', label: 'Overview' },
-    { id: 'autofetch', icon: 'keyboard', label: 'Data Entry' },
+    { id: 'data-entry', icon: 'keyboard', label: 'Data Entry' },
     { id: 'payout-records', icon: 'receipt_long', label: 'Payout Records' },
     { id: 'partners', icon: 'people', label: 'Partners' },
     { id: 'kyc-approval', icon: 'fact_check', label: 'KYC Review' },
@@ -167,7 +146,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
     reader.readAsText(file);
   };
 
-  const showKycAlert = user.role === UserRole.PARTNER && user.kycStatus !== KYCStatus.APPROVED;
+  const showKycAlert = false; // KYC alert removed for Partners
 
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden">
@@ -186,23 +165,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
         </div>
 
         <nav className="p-4 space-y-1 overflow-y-auto flex-1 custom-scrollbar">
-          {user.role === UserRole.PARTNER ? (
-            <>
-              {navItems.map((item) => (
-                <SidebarItem
-                  key={item.id}
-                  to={`/${item.id}`}
-                  icon={item.icon}
-                  label={item.label}
-                  badgeCount={item.badge}
-                />
-              ))}
-              <div className="pt-4 mt-4 border-t dark:border-gray-700">
-                <p className="px-4 py-2 text-[10px] font-black uppercase text-gray-400">Account</p>
-                <SidebarItem icon="logout" label="Logout" onClick={onLogout} />
-              </div>
-            </>
-          ) : (
+          {user.role === UserRole.ADMIN && (
             <>
               {/* Admin Console */}
               <div className="mb-6">
@@ -222,27 +185,6 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
                 <SidebarItem to="/my-account" icon="manage_accounts" label="My Account" />
               </div>
 
-              {/* Partner Console */}
-              <div className="mb-6">
-                <p className="px-4 py-2 text-[10px] font-black uppercase text-gray-400">Partner Console</p>
-                {[
-                  { id: 'partners', icon: 'people', label: 'Partners' },
-                  { id: 'kyc-approval', icon: 'fact_check', label: 'KYC Review' },
-                  { id: 'all-leads', icon: 'list_alt', label: 'Leads' },
-                  { id: 'payouts', icon: 'payments', label: 'Payments' },
-                  { id: 'admin-tickets', icon: 'confirmation_number', label: 'Tickets', badge: openTicketCount },
-                  { id: 'admin-notifications', icon: 'send_time_extension', label: 'Broadcast' },
-                  { id: 'banner-management', icon: 'campaign', label: 'Banners' },
-                ].map((item) => (
-                  <SidebarItem
-                    key={item.id}
-                    to={`/${item.id}`}
-                    icon={item.icon}
-                    label={item.label}
-                    badgeCount={item.badge}
-                  />
-                ))}
-              </div>
 
               {/* Maintenance Console */}
               <div className="mb-6">
