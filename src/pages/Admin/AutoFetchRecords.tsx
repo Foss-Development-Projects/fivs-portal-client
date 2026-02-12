@@ -399,7 +399,7 @@ const DataEntryLedger: React.FC = () => {
                 return (
                   <div className="w-full h-[88vh] bg-white rounded-3xl overflow-hidden shadow-2xl border-4 border-white/10">
                     <embed
-                      src={zoomedImage}
+                      src={getDocUrl(zoomedImage)}
                       type="application/pdf"
                       className="w-full h-full"
                     />
@@ -1111,7 +1111,7 @@ const WizardUpload = ({ label, subtext, file, fileType, onUpload, processing, on
               <p className="text-[10px] font-black uppercase text-gray-800 tracking-wider">PDF Ready</p>
               <p className="text-[9px] text-gray-400 mt-2 font-bold uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full border">Tap to Preview</p>
               {/* Silent iframe background for quick load check */}
-              <iframe src={`${file}#toolbar=0&view=FitH`} className="absolute inset-0 w-full h-full opacity-0 pointer-events-none" />
+              <iframe src={`${getDocUrl(file)}#toolbar=0&view=FitH`} className="absolute inset-0 w-full h-full opacity-0 pointer-events-none" />
             </div>
           ) : (
             <div onClick={onPreview} className="w-48 h-48 rounded-2xl bg-white flex flex-col items-center justify-center mb-4 border shadow-xl cursor-pointer">
