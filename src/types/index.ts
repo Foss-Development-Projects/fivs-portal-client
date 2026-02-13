@@ -101,7 +101,7 @@ export interface ContactPerson {
 }
 
 export interface AutoFetchRecord {
-  id: string; // Generated: CUSTOMERNAME + Last4Aadhar
+  id: string; // Generated: Last4Aadhar
   timestamp: string; // Immutable, first column
 
   // Auto-Fetched Fields
@@ -161,7 +161,7 @@ export interface AutoFetchRecord {
 }
 
 export interface AdminPayoutRecord {
-  id: string; // Same as Lead ID for association
+  id: string; // Same as Aadhaar ID for association
   timestamp: string;
   customerName: string;
   vehicleNumber: string;

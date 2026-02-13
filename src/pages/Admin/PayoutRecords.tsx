@@ -97,7 +97,7 @@ const AdminPayoutRecords: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>Lead ID</th>
+                <th>Aadhaar ID</th>
                 <th>Customer</th>
                 <th>Vehicle</th>
                 <th>Insurer</th>
@@ -135,7 +135,7 @@ const AdminPayoutRecords: React.FC = () => {
     }
 
     const headers = [
-      "DATE", "LEAD ID", "CUSTOMER NAME", "VEHICLE NUMBER", "INSURER",
+      "DATE", "AADHAAR ID", "CUSTOMER NAME", "VEHICLE NUMBER", "INSURER",
       "AGGREGATOR", "TYPE", "PREMIUM", "COMMISSION %",
       "COMM ON", "OD PREMIUM", "TP PREMIUM", "OD %", "TP %",
       "DISCOUNT", "BROKERAGE", "NET PROFIT", "STATUS", "REMARKS"

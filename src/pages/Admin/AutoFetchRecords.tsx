@@ -58,19 +58,16 @@ const DataEntryLedger: React.FC = () => {
 
   const [formData, setFormData] = useState<Partial<AutoFetchRecord>>(initialRecord);
 
-  // Auto-generate ID logic
+  // Auto-generate ID logic (Last 4 digits of Aadhaar)
   useEffect(() => {
-    if (activeView === 'wizard' && formData.ownerName && formData.aadhaarNo && formData.aadhaarNo.length >= 4) {
-      const namePart = formData.ownerName.replace(/\s+/g, '').toUpperCase();
-      const aadharPart = formData.aadhaarNo.slice(-4);
-      const newId = `${namePart}${aadharPart}`;
+    if (activeView === 'wizard' && formData.aadhaarNo && formData.aadhaarNo.length >= 4) {
+      const newId = formData.aadhaarNo.slice(-4);
 
-      // Only update if different to avoid loops (though dependency array handles it)
       if (formData.id !== newId) {
         setFormData(prev => ({ ...prev, id: newId }));
       }
     }
-  }, [formData.ownerName, formData.aadhaarNo, activeView]);
+  }, [formData.aadhaarNo, activeView]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'policy' | 'endorsement' | 'rc' | 'rcBack' | 'pan' | 'aadhaar' | 'aadhaarBack' | 'voterFront' | 'voterBack') => {
     const file = e.target.files?.[0];
@@ -277,7 +274,7 @@ const DataEntryLedger: React.FC = () => {
       return;
     }
 
-    const headers = ["Timestamp", "Lead ID", "Owner Name", "Mobile", "Vehicle Reg No", "Policy No", "Aggregator", "Insurance Co", "Renewal Date", "Status", "Last Updated"];
+    const headers = ["Timestamp", "Aadhaar ID", "Owner Name", "Mobile", "Vehicle Reg No", "Policy No", "Aggregator", "Insurance Co", "Renewal Date", "Status", "Last Updated"];
 
     const html = `
       <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -503,7 +500,7 @@ const DataEntryLedger: React.FC = () => {
               <table className="w-full text-left min-w-[1200px]">
                 <thead className="bg-gray-50 dark:bg-gray-900 text-[10px] uppercase font-black text-gray-400 border-b dark:border-gray-700">
                   <tr>
-                    <th className="px-8 py-5 min-w-[280px] whitespace-nowrap">Timestamp / ID</th>
+                    <th className="px-8 py-5 min-w-[280px] whitespace-nowrap">AADHAR ID</th>
                     <th className="px-8 py-5 min-w-[280px] whitespace-nowrap">Owner Details</th>
                     <th className="px-8 py-5 min-w-[200px]">Vehicle & Policy</th>
                     <th className="px-8 py-5 min-w-[350px]">Insurers</th>
@@ -782,9 +779,12 @@ const DataEntryLedger: React.FC = () => {
                     <section className="p-8 bg-blue-50 dark:bg-blue-900/20 rounded-[2.5rem] border border-blue-100 dark:border-blue-800 space-y-6">
                       <h4 className="text-[10px] font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">Aadhaar Audit</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <SmartInput id="af-aadhaar-no" label="Aadhaar Number" value={formData.aadhaarNo} onChange={v => setFormData(prev => ({ ...prev, aadhaarNo: v }))} />
+                        <SmartInput id="af-aadhaar-no" label="Aadhaar Number" value={formData.aadhaarNo} onChange={v => {
+                          const val = v.replace(/\D/g, '').slice(0, 12);
+                          setFormData(prev => ({ ...prev, aadhaarNo: val }));
+                        }} />
                         <div className="p-4 bg-[#2E7D32] text-white rounded-2xl flex flex-col justify-center">
-                          <p className="text-[8px] font-black uppercase opacity-60">System Lead ID</p>
+                          <p className="text-[8px] font-black uppercase opacity-60">Aadhaar ID</p>
                           <p className="text-sm font-black tracking-tight break-all">{formData.id || 'AWAITING DATA'}</p>
                         </div>
                       </div>
