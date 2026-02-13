@@ -37,10 +37,17 @@ const callApi = async (path: string, method = 'GET', body?: any) => {
     });
 
     if (response.status === 401 || response.status === 403) {
-      // Token invalid, session expired, or forbidden access
-      localStorage.removeItem('fivs_auth_token');
-      localStorage.removeItem('fivs_session_user');
-      window.location.reload();
+      const isAuthPath = path.includes('auth/login') || path.includes('auth/register');
+      if (!isAuthPath) {
+        // Token invalid or session expired
+        localStorage.removeItem('fivs_auth_token');
+        localStorage.removeItem('fivs_session_user');
+
+        // Only reload if not already at home to avoid loop
+        if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
+          window.location.href = '/';
+        }
+      }
       throw new Error("Session Expired or Access Denied");
     }
 

@@ -138,7 +138,10 @@ const App: React.FC = () => {
   // Sync Logic
   const isSyncingRef = useRef(false);
   const syncData = useCallback(async (isInitial = false) => {
-    if (!currentUser) return;
+    // We check for currentUser at call time, not in dependencies
+    const currentToken = localStorage.getItem('fivs_auth_token');
+    if (!currentToken) return;
+
     if (isSyncingRef.current) return;
     isSyncingRef.current = true;
     setIsSyncing(true);
@@ -172,22 +175,22 @@ const App: React.FC = () => {
       setAutoFetchRecords(Array.isArray(dbAutoFetch) ? dbAutoFetch : []);
       setAdminPayoutRecords(Array.isArray(dbAdminPayoutRecords) ? dbAdminPayoutRecords : []);
 
-      // REFRESH CURRENT USER: Update current user state with latest data from DB
-      if (currentUser && Array.isArray(dbUsers)) {
-        const freshUser = dbUsers.find(u => u.id === currentUser.id);
-        if (freshUser) {
-          // Check if user data actually changed to prevent infinite loops
-          const hasChanged =
-            freshUser.name !== currentUser.name ||
-            freshUser.email !== currentUser.email ||
-            freshUser.mobile !== currentUser.mobile ||
-            freshUser.role !== currentUser.role ||
-            freshUser.status !== currentUser.status;
+      // REFRESH CURRENT USER using functional update to avoid dependency
+      if (Array.isArray(dbUsers)) {
+        setCurrentUser(prev => {
+          if (!prev) return null;
+          const fresh = dbUsers.find(u => u.id === prev.id);
+          if (!fresh) return prev;
 
-          if (hasChanged) {
-            setCurrentUser(freshUser);
-          }
-        }
+          const hasChanged =
+            fresh.name !== prev.name ||
+            fresh.email !== prev.email ||
+            fresh.mobile !== prev.mobile ||
+            fresh.role !== prev.role ||
+            fresh.status !== prev.status;
+
+          return hasChanged ? fresh : prev;
+        });
       }
 
       setError(null);
@@ -199,7 +202,7 @@ const App: React.FC = () => {
       isSyncingRef.current = false;
       setIsSyncing(false);
     }
-  }, [currentUser]);
+  }, []); // NO DEPENDENCIES
 
   useEffect(() => {
     if (currentUser) {

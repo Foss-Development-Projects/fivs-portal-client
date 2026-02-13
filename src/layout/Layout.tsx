@@ -314,7 +314,6 @@ export const Layout: React.FC<LayoutProps> = ({ user, children, onLogout }) => {
         </div>
       </main>
 
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     </div>
   );
 };
