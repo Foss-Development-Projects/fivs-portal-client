@@ -58,6 +58,20 @@ const DataEntryLedger: React.FC = () => {
 
   const [formData, setFormData] = useState<Partial<AutoFetchRecord>>(initialRecord);
 
+  // Auto-generate ID logic
+  useEffect(() => {
+    if (activeView === 'wizard' && formData.ownerName && formData.aadhaarNo && formData.aadhaarNo.length >= 4) {
+      const namePart = formData.ownerName.replace(/\s+/g, '').toUpperCase();
+      const aadharPart = formData.aadhaarNo.slice(-4);
+      const newId = `${namePart}${aadharPart}`;
+
+      // Only update if different to avoid loops (though dependency array handles it)
+      if (formData.id !== newId) {
+        setFormData(prev => ({ ...prev, id: newId }));
+      }
+    }
+  }, [formData.ownerName, formData.aadhaarNo, activeView]);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'policy' | 'endorsement' | 'rc' | 'rcBack' | 'pan' | 'aadhaar' | 'aadhaarBack' | 'voterFront' | 'voterBack') => {
     const file = e.target.files?.[0];
     if (!file) return;
