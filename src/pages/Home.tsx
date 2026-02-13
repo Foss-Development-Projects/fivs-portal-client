@@ -39,14 +39,11 @@ const MovingNeonWrapper: React.FC<{ children: React.ReactNode; className?: strin
 
 const Home: React.FC<HomeProps> = ({ onLogin }) => {
   const { registerUser, setCurrentUser, darkMode, toggleDarkMode } = useGlobalState();
-  const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    mobile: '',
     password: ''
   });
 
@@ -59,32 +56,20 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
     setIsLoading(true);
 
     try {
-      if (isLogin) {
-        const user = await api.login(formData.email, formData.password);
+      const user = await api.login(formData.email, formData.password);
 
-        if (user.role === UserRole.PARTNER && user.status === UserStatus.PENDING) {
-          setError('Your account is waiting for Admin approval.');
-          return;
-        }
-        if (user.status === UserStatus.SUSPENDED || user.status === UserStatus.FROZEN) {
-          setError('Your account has been restricted. Contact support.');
-          return;
-        }
-        setCurrentUser(user);
-        onLogin(user.role);
-      } else {
-        await registerUser({
-          name: formData.name,
-          email: formData.email,
-          mobile: formData.mobile,
-          username: formData.email.split('@')[0],
-          role: UserRole.PARTNER,
-          password: formData.password
-        } as any);
-        setSuccess('Hooray! Your registration request has been accepted and pending for review. you will be notified shortly within 72 hours when it is activated.');
-        setIsLogin(true);
+      if (user.role === UserRole.PARTNER && user.status === UserStatus.PENDING) {
+        setError('Your account is waiting for Admin approval.');
         setFormData({ ...formData, password: '' });
+        return;
       }
+      if (user.status === UserStatus.SUSPENDED || user.status === UserStatus.FROZEN) {
+        setError('Your account has been restricted. Contact support.');
+        setFormData({ ...formData, password: '' });
+        return;
+      }
+      setCurrentUser(user);
+      onLogin(user.role);
     } catch (err: any) {
       setError(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
@@ -155,22 +140,9 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                     <img src={LOGO_URL} alt="FIVS Logo" className="h-16 w-auto object-contain" />
                   </div>
 
-                  <div className="bg-[#f0f2f5] dark:bg-gray-800/50 p-1.5 rounded-[1.25rem] flex mb-9 relative">
-                    <div
-                      className={`absolute inset-1.5 w-[calc(50%-6px)] bg-white dark:bg-gray-700 rounded-xl shadow-md transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isLogin ? 'translate-x-[calc(100%)]' : 'translate-x-0'}`}
-                    />
-                    <button
-                      onClick={() => { setIsLogin(false); setError(null); }}
-                      className={`flex-1 py-3 rounded-xl text-[14px] md:text-[15px] font-bold transition-all relative z-10 ${!isLogin ? 'text-gray-800 dark:text-white' : 'text-gray-400 hover:text-gray-500'}`}
-                    >
-                      Register
-                    </button>
-                    <button
-                      onClick={() => setIsLogin(true)}
-                      className={`flex-1 py-3 rounded-xl text-[14px] md:text-[15px] font-bold transition-all relative z-10 ${isLogin ? 'text-[#2E7D32] dark:text-green-400' : 'text-gray-400 hover:text-gray-500'}`}
-                    >
-                      Login
-                    </button>
+                  <div className="text-center mb-10">
+                    <h2 className="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-widest">Admin Login</h2>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Access your professional dashboard</p>
                   </div>
 
                   {error && (
@@ -187,21 +159,6 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                   )}
 
                   <form onSubmit={handleSubmit} className="space-y-6 relative">
-                    {!isLogin && (
-                      <div className="space-y-2 group">
-                        <label htmlFor="auth-name" className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">Full Name</label>
-                        <input
-                          type="text"
-                          id="auth-name"
-                          name="name"
-                          required
-                          className="w-full px-5 py-4 rounded-2xl bg-gray-100/50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-400 text-sm md:text-base font-bold shadow-inner"
-                          placeholder="Enter your name"
-                          value={formData.name}
-                          onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        />
-                      </div>
-                    )}
 
                     <div className="space-y-2 group">
                       <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">EMAIL ADDRESS</label>
@@ -217,21 +174,6 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                       />
                     </div>
 
-                    {!isLogin && (
-                      <div className="space-y-2 group">
-                        <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">Mobile Number</label>
-                        <input
-                          type="tel"
-                          id="auth-mobile"
-                          name="mobile"
-                          required
-                          className="w-full px-5 py-4 rounded-2xl bg-gray-100/50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 dark:text-white focus:border-[#2E7D32] focus:ring-4 focus:ring-green-500/5 outline-none transition-all placeholder-gray-400 text-sm md:text-base font-bold shadow-inner"
-                          placeholder="9876543210"
-                          value={formData.mobile}
-                          onChange={e => setFormData({ ...formData, mobile: e.target.value })}
-                        />
-                      </div>
-                    )}
 
                     <div className="space-y-2 group">
                       <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] ml-1">PASSWORD</label>
@@ -256,7 +198,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                         <span className="material-icons-outlined animate-spin text-2xl">sync</span>
                       ) : (
                         <span className="flex items-center gap-2">
-                          {isLogin ? 'Login to Portal' : 'Create Account'}
+                          Login to Portal
                           <span className="material-icons-outlined text-sm">arrow_forward</span>
                         </span>
                       )}
