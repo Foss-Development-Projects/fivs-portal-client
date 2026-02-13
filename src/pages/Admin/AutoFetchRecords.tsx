@@ -503,8 +503,8 @@ const DataEntryLedger: React.FC = () => {
               <table className="w-full text-left min-w-[1200px]">
                 <thead className="bg-gray-50 dark:bg-gray-900 text-[10px] uppercase font-black text-gray-400 border-b dark:border-gray-700">
                   <tr>
-                    <th className="px-8 py-5">Timestamp / ID</th>
-                    <th className="px-8 py-5 min-w-[200px]">Owner Details</th>
+                    <th className="px-8 py-5 min-w-[200px] whitespace-nowrap">Timestamp / ID</th>
+                    <th className="px-8 py-5 min-w-[280px] whitespace-nowrap">Owner Details</th>
                     <th className="px-8 py-5 min-w-[200px]">Vehicle & Policy</th>
                     <th className="px-8 py-5 min-w-[350px]">Insurers</th>
                     <th className="px-8 py-5 min-w-[180px]">Renewal Timeline</th>

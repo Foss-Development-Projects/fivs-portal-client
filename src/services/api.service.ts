@@ -102,6 +102,12 @@ export const portalApi = {
     await callApi('auth/status');
   },
 
+  logout: async (): Promise<void> => {
+    await callApi('auth/logout');
+    localStorage.removeItem('fivs_auth_token');
+    localStorage.removeItem('fivs_session_user');
+  },
+
   register: async (userData: any): Promise<User> => {
     const id = `P${Date.now()}`;
     const newUser = { ...userData, id, status: UserStatus.PENDING, kycStatus: KYCStatus.NOT_SUBMITTED, leadSubmissionEnabled: true, kycDocuments: [] };

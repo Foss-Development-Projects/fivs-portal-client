@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { User, UserRole, UserStatus, KYCStatus, Lead, LeadStatus, Transaction, Notification, Ticket, Banner, PayoutReport, ProfitReport, AutoFetchRecord, AdminPayoutRecord } from './types';
 import { Layout } from './layout/Layout';
 import { StateContext } from './context';
@@ -10,6 +10,8 @@ import AdminPayoutRecords from './pages/Admin/PayoutRecords';
 import AdminAutoFetch from './pages/Admin/AutoFetchRecords';
 import AdminProfile from './pages/Admin/AdminProfile';
 import { initFormPersistence } from './utils/formPersistence';
+import ErrorPage from './pages/ErrorPage';
+import { AdminGuard, AuthGuard } from './components/RouteGuards';
 
 import './assets/css/app.css';
 
@@ -57,7 +59,12 @@ const App: React.FC = () => {
     toastTimeoutRef.current = setTimeout(() => setToast(null), 4000);
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await api.logout();
+    } catch (e) {
+      // Ignore cleanup errors
+    }
     setCurrentUser(null);
     localStorage.removeItem('fivs_session_user');
     localStorage.removeItem('fivs_auth_token');
@@ -255,27 +262,31 @@ const App: React.FC = () => {
       showAlert, showConfirm, showToast,
       redemptionRequests: []
     }}>
-      <div className={darkMode ? 'dark' : ''}>
-        {!currentUser ? (
-          <Home onLogin={() => navigate('/overview')} />
-        ) : (
-          <Layout
-            user={currentUser}
-            onLogout={logout}
-          >
-            <Routes>
-              {currentUser.role === UserRole.ADMIN && (
-                <>
-                  <Route path="/overview" element={<AdminDashboard />} />
-                  <Route path="/data-entry" element={<AdminAutoFetch />} />
-                  <Route path="/payout-records" element={<AdminPayoutRecords />} />
-                  <Route path="/my-account" element={<AdminProfile />} />
-                  <Route path="*" element={<Navigate to="/overview" replace />} />
-                </>
-              )}
-            </Routes>
-          </Layout>
-        )}
+      <div className={`${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'} min-h-screen transition-colors duration-300`}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={!currentUser ? <Home onLogin={() => navigate('/overview')} /> : <Navigate to="/overview" replace />} />
+
+          {/* Protected Routes */}
+          <Route element={<AuthGuard user={currentUser} />}>
+            <Route element={
+              <Layout user={currentUser!} onLogout={logout}>
+                <Outlet />
+              </Layout>
+            }>
+              {/* Admin Routes */}
+              <Route element={<AdminGuard user={currentUser} />}>
+                <Route path="/overview" element={<AdminDashboard />} />
+                <Route path="/data-entry" element={<AdminAutoFetch />} />
+                <Route path="/payout-records" element={<AdminPayoutRecords />} />
+                <Route path="/my-account" element={<AdminProfile />} />
+              </Route>
+            </Route>
+          </Route>
+
+          {/* Catch-all - 404 */}
+          <Route path="*" element={<ErrorPage type="404" />} />
+        </Routes>
 
         {/* Global Alert Modal */}
         {alert && (
